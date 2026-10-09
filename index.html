@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#064e3b">
+<title>Sidratul Islami Bank</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Hind Siliguri',sans-serif}
+:root{--p:#064e3b;--pl:#059669;--g:#d4af37;--gd:#a8842c;--d:#dc2626;--w:#d97706;--bg:#f0fdf4;--t:#052e16;--tl:#6b7280;--b:#d1fae5;--sh:0 2px 8px rgba(6,78,59,.08)}
+body{background:var(--bg);color:var(--t);min-height:100vh}
+input,select,button{font-family:inherit;font-size:15px}
+
+/* AUTH */
+#auth{min-height:100vh;background:linear-gradient(135deg,#052e16,#064e3b,#047857);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+.abox{background:#fff;border-radius:20px;padding:26px 20px;width:100%;max-width:400px;box-shadow:0 20px 50px rgba(0,0,0,.35);border:2px solid rgba(212,175,55,.35);margin:auto}
+.logo{width:72px;height:72px;margin:0 auto 10px;background:linear-gradient(135deg,#064e3b,#047857);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 0 4px rgba(212,175,55,.3)}
+h1.br{font-size:20px;color:var(--p);text-align:center;font-weight:700;margin-bottom:3px}
+.ar{font-family:'Amiri',serif;font-size:14px;color:var(--gd);text-align:center;direction:rtl;margin-bottom:2px}
+.tag{font-size:10px;color:var(--tl);text-align:center;margin-bottom:14px}
+.bis{font-family:'Amiri',serif;font-size:13px;color:var(--p);text-align:center;padding:6px 0 12px;border-bottom:1px solid var(--b);margin-bottom:14px;direction:rtl}
+.tabs{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:16px}
+.tab{flex:1;padding:9px;border-radius:8px;border:none;background:transparent;font-weight:600;font-size:13px;color:var(--tl);cursor:pointer}
+.tab.on{background:var(--p);color:#fff}
+.fg{margin-bottom:11px}
+.fg label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
+.fg input,.fg select{width:100%;padding:11px 13px;border:2px solid var(--b);border-radius:10px;background:#f8fafc}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--pl);background:#fff}
+.hint{font-size:10px;color:var(--tl);margin-top:3px}
+.tin{text-align:center;font-size:22px;letter-spacing:8px;font-weight:700;font-family:monospace}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.6}
+.bp{background:linear-gradient(135deg,var(--p),var(--pl));color:#fff}
+.bs{background:#10b981;color:#fff}
+.bd{background:var(--d);color:#fff}
+.bw{background:var(--w);color:#fff}
+.bi{background:#2563eb;color:#fff}
+.bo{background:#fff;color:var(--p);border:2px solid var(--p)}
+.bsm{padding:6px 10px;font-size:11px;width:auto;border-radius:8px}
+
+/* APP */
+#app{display:none;min-height:100vh}
+#app.on{display:block}
+.tb{background:linear-gradient(135deg,#052e16,#064e3b,#047857);color:#fff;padding:14px 16px 18px;border-radius:0 0 20px 20px;box-shadow:0 6px 20px rgba(6,78,59,.3);position:sticky;top:0;z-index:50}
+.bb{display:flex;align-items:center;gap:9px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(212,175,55,.25)}
+.bm{width:34px;height:34px;background:linear-gradient(135deg,var(--g),var(--gd));border-radius:50% 50% 50% 50%/60% 60% 40% 40%;display:flex;align-items:center;justify-content:center;font-size:16px}
+.bb h2{font-size:12px;font-weight:700}
+.bb .ar2{font-family:'Amiri',serif;font-size:9px;color:var(--g);direction:rtl}
+.ur{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ui{display:flex;align-items:center;gap:9px}
+.av{width:36px;height:36px;border-radius:50%;background:rgba(212,175,55,.25);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;border:2px solid rgba(212,175,55,.4);color:#fff;flex-shrink:0}
+.av.sm{width:30px;height:30px;font-size:13px;border-width:1.5px}
+.av.lg{width:64px;height:64px;font-size:24px;border-width:3px}
+.ui h3{font-size:13px;font-weight:700}
+.ui p{font-size:9px;color:var(--g);text-transform:uppercase;letter-spacing:1px}
+.lg{background:rgba(220,38,38,.25);border:1px solid rgba(220,38,38,.4);color:#fff;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
+.bc{background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(212,175,55,.05));border-radius:12px;padding:12px;border:1.5px solid rgba(212,175,55,.4)}
+.bc .l{font-size:9px;color:var(--g);letter-spacing:1.2px;text-transform:uppercase;font-weight:600}
+.bc .a{font-size:23px;font-weight:800;margin-top:3px}
+.ct{padding:14px;padding-bottom:90px;max-width:900px;margin:0 auto}
+.sc{margin-bottom:18px}
+.st{font-size:13px;font-weight:700;margin-bottom:9px;color:var(--p);display:flex;justify-content:space-between;align-items:center}
+.st span{color:var(--tl);font-size:11px;font-weight:500;cursor:pointer}
+.qk{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.qb{background:#fff;border:1px solid var(--b);padding:11px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;box-shadow:var(--sh)}
+.qb:active{transform:scale(.95)}
+.qi{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.qb span:last-child{font-size:9px;font-weight:600;text-align:center;line-height:1.2}
+.ac{background:#fff;border-radius:12px;padding:13px;margin-bottom:9px;box-shadow:var(--sh);border-left:4px solid var(--p);cursor:pointer}
+.ac.savings{border-left-color:#10b981}
+.ac.current{border-left-color:var(--pl)}
+.ac.fixed_deposit{border-left-color:var(--g)}
+.ah{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px}
+.at{font-size:10px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:1px}
+.an{font-family:monospace;font-size:11px;color:var(--tl)}
+.ab{font-size:18px;font-weight:800;color:var(--p)}
+.bd2{padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase}
+.bA{background:#d1fae5;color:#065f46}
+.bF{background:#dbeafe;color:#1e40af}
+.bB{background:#fee2e2;color:#991b1b}
+.bP{background:#fef3c7;color:#92400e}
+.bR{background:#f3e8ff;color:#6b21a8}
+.rl{padding:2px 7px;border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase}
+.rAdmin{background:#fce7f3;color:#9d174d}
+.rAgent{background:#dbeafe;color:#1e40af}
+.rUser{background:#e0e7ff;color:#3730a3}
+.emp{text-align:center;padding:30px 16px;color:var(--tl)}
+.emp .i{font-size:38px;margin-bottom:8px;opacity:.5}
+.emp p{font-size:13px;margin-bottom:12px}
+.tx{background:#fff;padding:10px;border-radius:11px;margin-bottom:6px;display:flex;align-items:center;gap:9px;box-shadow:var(--sh);border:1px solid var(--b)}
+.ti{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.tx .in{flex:1;min-width:0}
+.tx .in h4{font-size:12px;font-weight:700;margin-bottom:1px}
+.tx .in p{font-size:10px;color:var(--tl);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tam{font-weight:800;font-size:12px;text-align:right;flex-shrink:0}
+.tam.plus{color:#10b981}
+.tam.minus{color:var(--d)}
+.nv{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--b);display:flex;padding:5px 0;padding-bottom:max(5px,env(safe-area-inset-bottom));z-index:50;box-shadow:0 -3px 20px rgba(6,78,59,.08)}
+.ni{flex:1;padding:6px;text-align:center;border:none;background:none;cursor:pointer;color:var(--tl);position:relative}
+.ni.on{color:var(--p)}
+.ni.on::before{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:32px;height:3px;background:var(--g);border-radius:0 0 3px 3px}
+.ni .ic{font-size:16px;display:block;margin-bottom:1px}
+.ni .lb{font-size:9px;font-weight:600}
+.ov{position:fixed;inset:0;background:rgba(5,46,22,.7);display:none;align-items:flex-end;justify-content:center;z-index:100;overflow-y:auto}
+.ov.on{display:flex}
+.md{background:#fff;width:100%;max-width:500px;border-radius:20px 20px 0 0;padding:18px;max-height:92vh;overflow-y:auto;border-top:4px solid var(--g);margin-top:auto}
+.hn{width:36px;height:4px;background:var(--b);border-radius:4px;margin:0 auto 10px}
+.md h2{font-size:17px;font-weight:700;margin-bottom:4px;color:var(--p)}
+.md .sb{font-size:12px;color:var(--tl);margin-bottom:14px}
+.aw{position:relative;margin-bottom:11px}
+.aw .sy{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:19px;font-weight:800;color:var(--p)}
+.ai{width:100%;padding:13px 13px 13px 42px;font-size:20px;font-weight:700;border:2px solid var(--b);border-radius:11px;background:#f8fafc}
+.ir{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--b);font-size:12px;gap:10px}
+.ir:last-child{border-bottom:none}
+.ir .l{color:var(--tl);flex-shrink:0}
+.ir .v{font-weight:700;text-align:right;word-break:break-all}
+.tbl{background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--sh);border:1px solid var(--b)}
+.rw{padding:10px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:9px}
+.rw:last-child{border-bottom:none}
+.rw .ii{flex:1;min-width:0}
+.rw h4{font-size:12px;font-weight:700;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rw p{font-size:10px;color:var(--tl);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.sc2{background:#fff;padding:12px;border-radius:12px;box-shadow:var(--sh);border:1px solid var(--b)}
+.sc2 .l{font-size:9px;color:var(--tl);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.sc2 .v{font-size:19px;font-weight:800;margin-top:3px;color:var(--p)}
+.sc2.gold{background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(212,175,55,.05));border:1.5px solid rgba(212,175,55,.4)}
+.sc2.gold .l{color:var(--gd)}
+.sb2{display:flex;gap:6px;margin-bottom:10px}
+.sb2 input{flex:1;padding:10px 13px;border:2px solid var(--b);border-radius:11px;font-size:14px;background:#fff}
+.ch{display:flex;gap:5px;overflow-x:auto;padding-bottom:3px;margin-bottom:10px}
+.cp2{padding:6px 12px;background:#fff;border:1.5px solid var(--b);border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;color:var(--tl)}
+.cp2.on{background:var(--p);color:#fff;border-color:var(--p)}
+.tc{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:6px;width:calc(100% - 30px);max-width:380px;pointer-events:none}
+.toast{background:#fff;padding:10px 12px;border-radius:11px;box-shadow:0 10px 30px rgba(0,0,0,.15);display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;border-left:4px solid #10b981;pointer-events:auto;animation:sld .25s}
+.toast.e{border-left-color:var(--d)}
+.toast.i{border-left-color:var(--g)}
+@keyframes sld{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.qr{text-align:center;padding:14px;background:var(--bg);border-radius:12px;margin:10px 0;border:2px dashed var(--g)}
+.qr img{width:170px;height:170px;background:#fff;padding:6px;border-radius:10px}
+.sk{background:#052e16;color:#6ee7b7;padding:10px;border-radius:8px;font-family:monospace;font-size:11px;margin-top:8px;word-break:break-all;text-align:center;letter-spacing:1.5px;border-left:3px solid var(--g)}
+.nt{background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(212,175,55,.02));border:1.5px dashed var(--g);border-radius:12px;padding:10px;font-size:11px;color:var(--gd);text-align:center;line-height:1.6;margin-bottom:14px}
+.pw{padding:8px 10px;border-radius:10px;margin-bottom:11px;font-size:11px;display:none}
+.pw.ok{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;display:block}
+.pw.wk{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;display:block}
+@media(min-width:640px){.ov{align-items:center}.md{border-radius:20px}}
+</style>
+</head>
+<body>
+
+<div id="auth">
+  <div class="abox">
+    <div class="logo">🕌</div>
+    <h1 class="br" id="bn">Sidratul Islami Bank</h1>
+    <div class="ar">بنك سدرة الإسلام</div>
+    <div class="tag">Shariah Compliant Islamic Banking</div>
+    <div class="bis">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <div class="tabs">
+      <button class="tab on" onclick="tab('lg',event)">Login</button>
+      <button class="tab" onclick="tab('rg',event)">Register</button>
+    </div>
+    <form id="f-lg" onsubmit="login(event)" autocomplete="off">
+      <div class="fg"><label>📧 Email</label><input type="email" id="le" required autocomplete="off" autocapitalize="none" spellcheck="false" placeholder=""></div>
+      <div class="fg"><label>🔒 Password</label><input type="password" id="lp" required autocomplete="new-password" placeholder=""></div>
+      <div class="fg"><label>🔐 TOTP Code (6 digits)</label><input type="text" id="lt" class="tin" maxlength="6" inputmode="numeric" required autocomplete="one-time-code" placeholder="------"></div>
+      <button type="submit" class="btn bp" id="lbtn">Sign In</button>
+    </form>
+    <form id="f-rg" style="display:none" onsubmit="register(event)">
+      <div class="fg"><label>👤 Full Name</label><input type="text" id="rn" required minlength="3"></div>
+      <div class="fg"><label>📧 Email</label><input type="email" id="re" required></div>
+      <div class="fg"><label>📱 Mobile</label><input type="tel" id="rp" required pattern="01[3-9]\d{8}" placeholder="01712345678"></div>
+      <div class="fg"><label>🎂 Date of Birth</label><input type="date" id="rdob" required></div>
+      <div class="fg"><label>📄 Document Type</label><select id="rdt" onchange="docTgl()"><option value="nid">National ID (NID)</option><option value="passport">Passport</option></select></div>
+      <div class="fg"><label id="rdl">🆔 NID Number (10-17 digits)</label><input type="text" id="rid" required inputmode="numeric" autocomplete="off"></div>
+      <div class="fg"><label>🔒 Password (8+ chars)</label><input type="password" id="rpw" required minlength="8"></div>
+      <button type="submit" class="btn bp" id="rbtn">Register</button>
+    </form>
+  </div>
+</div>
+
+<div id="app">
+  <div class="tb">
+    <div class="bb">
+      <div class="bm">🕌</div>
+      <div><h2 id="hbn">Sidratul Islami Bank</h2><div class="ar2">بنك سدرة الإسلام</div></div>
+    </div>
+    <div class="ur">
+      <div class="ui"><div class="av" id="uav">U</div><div><h3 id="un">—</h3><p id="ur2">—</p></div></div>
+      <button class="lg" onclick="logout()">Logout</button>
+    </div>
+    <div class="bc" id="bc"><div class="l">Total Balance</div><div class="a" style="display:flex;gap:16px;flex-wrap:wrap;"><span><span id="ba">0.00</span> <span style="font-size:12px;opacity:.8;">BDT</span></span><span><span id="bau">0.00</span> <span style="font-size:12px;opacity:.8;">USD</span></span></div></div>
+  </div>
+  <div class="ct" id="ct"></div>
+  <nav class="nv" id="nv"></nav>
+</div>
+
+<div class="ov" id="ov" onclick="if(event.target.id==='ov')closeM()"><div class="md" id="md"></div></div>
+<div class="tc" id="tc"></div>
+
+<script>
+/* ============ 0. FIREBASE CLOUD SYNC ============ */
+/* Paste your Firebase config below (Firebase Console → Project settings → Your apps → Web app) */
+const FB_CFG={
+  apiKey:"AIzaSyDZSh4N0baHMQyZjmgyFXiunT-DXfmo4Kc",
+  authDomain:"mridulk-4224a.firebaseapp.com",
+  databaseURL:"https://mridulk-4224a-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"mridulk-4224a",
+  storageBucket:"mridulk-4224a.firebasestorage.app",
+  messagingSenderId:"818532696018",
+  appId:"1:818532696018:web:770ddbbdef496329b4920b"
+};
+let FB=null,_fbT=null;
+function fbCfgOk(){return FB_CFG.apiKey&&FB_CFG.apiKey.indexOf('PASTE')!==0&&FB_CFG.databaseURL&&FB_CFG.databaseURL.indexOf('PASTE')!==0}
+function fbInit(){
+  try{
+    if(typeof firebase==='undefined'||!fbCfgOk())return false;
+    firebase.initializeApp(FB_CFG);
+    FB=firebase.database().ref('sib');
+    return true;
+  }catch(e){console.warn('Firebase:',e);FB=null;return false}
+}
+/* Debounced cloud push after every write */
+function fbSync(){if(!FB)return;clearTimeout(_fbT);_fbT=setTimeout(fbPush,600)}
+function fbPush(){
+  if(!FB)return;
+  const ts=Date.now();
+  const st={u:DB.g('u',[]),a:DB.g('a',[]),t:DB.g('t',[]),l:DB.g('l',[]),n:DB.ctr(),cfg:DB.cfg(),ts:ts};
+  FB.set(st).then(()=>{try{localStorage.setItem('fb_ts',String(ts))}catch(e){}}).catch(e=>console.warn('FB push:',e));
+}
+/* Pull remote data only when newer (last-write-wins) */
+async function fbPull(){
+  if(!FB)return false;
+  try{
+    const snap=await FB.get();
+    const v=snap.val();
+    if(!v||!v.ts)return false;
+    const local=Number(localStorage.getItem('fb_ts')||0);
+    if(v.ts<=local)return false;
+    if(Array.isArray(v.u))DB.su(v.u);
+    if(Array.isArray(v.a))DB.sa(v.a);
+    if(Array.isArray(v.t))DB.st(v.t);
+    if(Array.isArray(v.l))DB.sl(v.l);
+    if(v.n)DB.sct(v.n);
+    if(v.cfg)DB.sc(v.cfg);
+    try{localStorage.setItem('fb_ts',String(v.ts))}catch(e){}
+    return true;
+  }catch(e){console.warn('FB pull:',e);return false}
+}
+/* Auto-refresh when window regains focus */
+window.addEventListener('focus',()=>{if(!FB)return;clearTimeout(window._fbF);window._fbF=setTimeout(async()=>{const ok=await fbPull();if(ok&&document.getElementById('app').classList.contains('on'))render()},500)});
+
+/* ============ 1. CRYPTO (SHA1 + HMAC + TOTP) ============ */
+function rotl(n,b){return((n<<b)|(n>>>(32-b)))>>>0}
+function sha1(bytes){
+  const K=[0x5a827999,0x6ed9eba1,0x8f1bbcdc,0xca62c1d6];
+  const H=[0x67452301,0xefcdab89,0x98badcfe,0x10325476,0xc3d2e1f0];
+  const ml=bytes.length*8, tl=Math.ceil((bytes.length+9)/64)*64;
+  const msg=new Uint8Array(tl);msg.set(bytes);msg[bytes.length]=0x80;
+  const v=new DataView(msg.buffer);
+  v.setUint32(tl-8,Math.floor(ml/4294967296),false);v.setUint32(tl-4,ml>>>0,false);
+  for(let i=0;i<tl;i+=64){
+    const w=new Uint32Array(80);
+    for(let j=0;j<16;j++)w[j]=v.getUint32(i+j*4,false);
+    for(let j=16;j<80;j++)w[j]=rotl(w[j-3]^w[j-8]^w[j-14]^w[j-16],1);
+    let[a,b,c,d,e]=H;
+    for(let j=0;j<80;j++){
+      let f,k;
+      if(j<20){f=(b&c)|(~b&d);k=K[0]}
+      else if(j<40){f=b^c^d;k=K[1]}
+      else if(j<60){f=(b&c)|(b&d)|(c&d);k=K[2]}
+      else{f=b^c^d;k=K[3]}
+      const t=(rotl(a,5)+f+e+k+w[j])>>>0;
+      e=d;d=c;c=rotl(b,30);b=a;a=t;
+    }
+    H[0]=(H[0]+a)>>>0;H[1]=(H[1]+b)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;H[4]=(H[4]+e)>>>0;
+  }
+  const o=new Uint8Array(20),ov=new DataView(o.buffer);
+  for(let i=0;i<5;i++)ov.setUint32(i*4,H[i],false);
+  return o;
+}
+function cat(a,b){const o=new Uint8Array(a.length+b.length);o.set(a);o.set(b,a.length);return o}
+function hmac(k,m){
+  const bs=64;
+  if(k.length>bs)k=sha1(k);
+  const p=new Uint8Array(bs);p.set(k);
+  const op=new Uint8Array(bs),ip=new Uint8Array(bs);
+  for(let i=0;i<bs;i++){op[i]=p[i]^0x5c;ip[i]=p[i]^0x36}
+  return sha1(cat(op,sha1(cat(ip,m))));
+}
+function b32d(s){
+  const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  s=s.replace(/[^A-Z2-7]/gi,'').toUpperCase();
+  let bits=0,val=0;const o=[];
+  for(const c of s){
+    const i=A.indexOf(c);if(i===-1)continue;
+    val=(val<<5)|i;bits+=5;
+    if(bits>=8){o.push((val>>>(bits-8))&0xff);bits-=8}
+  }
+  return new Uint8Array(o);
+}
+function totp(secret,time){
+  time=time||Date.now();
+  const c=Math.floor(time/1000/30);
+  const cb=new Uint8Array(8);
+  const v=new DataView(cb.buffer);
+  v.setUint32(0,Math.floor(c/4294967296),false);
+  v.setUint32(4,c>>>0,false);
+  const h=hmac(b32d(secret),cb);
+  const off=h[19]&0x0f;
+  const code=((h[off]&0x7f)<<24)|((h[off+1]&0xff)<<16)|((h[off+2]&0xff)<<8)|(h[off+3]&0xff);
+  return String(code%1000000).padStart(6,'0');
+}
+function verifyTOTP(secret,code){
+  for(let i=-1;i<=1;i++){if(totp(secret,Date.now()+i*30000)===code)return true}
+  return false;
+}
+/* 32-char valid Base32 secret */
+function newSecret(){
+  const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';let s='';
+  const a=new Uint8Array(32);crypto.getRandomValues(a);
+  for(let i=0;i<32;i++)s+=A[a[i]%32];
+  return s;
+}
+function hash(pwd){
+  const salt='sib_2024_';
+  const b=new TextEncoder().encode(salt+pwd+salt);
+  return Array.from(sha1(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+/* ============ 2. STORAGE ============ */
+const DB={
+  g(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  s(k,v){try{localStorage.setItem(k,JSON.stringify(v));fbSync();return true}catch(e){return false}},
+  users(){return this.g('u',[])},su(a){this.s('u',a)},
+  accs(){return this.g('a',[])},sa(a){this.s('a',a)},
+  txs(){return this.g('t',[])},st(a){this.s('t',a)},
+  logs(){return this.g('l',[])},sl(a){this.s('l',a)},
+  cfg(){return this.g('cfg',null)},sc(c){this.s('cfg',c)},
+  ctr(){return this.g('n',{u:0,a:0,t:0,l:0})},sct(c){this.s('n',c)},
+  nid(k){const c=this.ctr();c[k]=(c[k]||0)+1;this.sct(c);return c[k]}
+};
+
+/* ============ 3. LOGIC ============ */
+const R={USD:1,BDT:110,EUR:0.92,GBP:0.79,INR:83.3,JPY:150,AUD:1.52,CAD:1.36,CHF:0.88,CNY:7.2,SGD:1.34,AED:3.67,SAR:3.75,MYR:4.7};
+function rate(f,t){if(f===t)return 1;if(!R[f]||!R[t])throw new Error('Currency not supported');return R[t]/R[f]}
+/* Cash-out fee: from config (%) */
+function feeOf(amt){return Math.round(amt*(cfg().feeCashOut/100)*100)/100}
+/* Agent commission (%) on both cash-in and cash-out */
+function commOf(amt){return Math.round(amt*(cfg().agentComm/100)*100)/100}
+function agentBDT(uid){return DB.accs().find(a=>a.uid===uid&&a.cur==='BDT'&&a.status==='active')}
+function adminBDT(){const ad=DB.users().find(u=>u.role==='admin'&&u.status==='active');return ad?agentBDT(ad.id):null}
+
+const P={
+  savings:{r:5,min:500,l:'Mudarabah Savings'},
+  current:{r:0,min:0,l:'Al-Wadiah Current'},
+  fixed_deposit:{r:8,min:10000,l:'Musharakah Fixed Deposit'}
+};
+
+function newAccNo(t){const p={savings:'100',current:'200',fixed_deposit:'300'}[t]||'999';return p+String(Math.floor(100000000+Math.random()*900000000))}
+function newRef(){return 'TXN'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,6).toUpperCase()}
+
+function log(uid,act,det){
+  const a=DB.logs();
+  a.unshift({id:DB.nid('l'),u:uid,act:act,d:JSON.stringify(det||{}),t:Date.now()});
+  if(a.length>1000)a.length=1000;
+  DB.sl(a);
+}
+function findU_email(e){return DB.users().find(u=>u.email===String(e).toLowerCase().trim())}
+function findU_id(i){return DB.users().find(u=>u.id===i)}
+function findU_nid(n){return DB.users().find(u=>u.nid===String(n).trim())}
+
+function addUser(d){
+  const us=DB.users();
+  if(us.some(u=>u.email===d.email.toLowerCase().trim()))throw new Error('This email is already used');
+  if(us.some(u=>u.phone===d.phone))throw new Error('This mobile is already used');
+  if(us.some(u=>u.nid===d.nid))throw new Error('This NID is already used');
+  const u={
+    id:DB.nid('u'),
+    name:d.name.trim(),
+    email:d.email.toLowerCase().trim(),
+    phone:d.phone.trim(),
+    pwd:hash(d.pwd),
+    role:d.role||'user',
+    nid:d.nid.trim(),
+    doc:d.doc||'nid',
+    dob:d.dob||null,
+    nid_v:d.nid_v?1:0,
+    secret:d.secret,
+    totp:0,
+    status:d.status||'pending',
+    reason:'',
+    last:null,
+    pwd_at:Date.now(),
+    created:Date.now()
+  };
+  us.push(u);DB.su(us);
+  return u;
+}
+function updUser(id,patch){
+  const us=DB.users(),i=us.findIndex(u=>u.id===id);
+  if(i===-1)throw new Error('User not found');
+  us[i]={...us[i],...patch};DB.su(us);
+  return us[i];
+}
+function delUser(id){
+  DB.su(DB.users().filter(u=>u.id!==id));
+  const aids=DB.accs().filter(a=>a.uid===id).map(a=>a.id);
+  DB.sa(DB.accs().filter(a=>a.uid!==id));
+  DB.st(DB.txs().filter(t=>!aids.includes(t.aid)));
+}
+function addAcc(d){
+  const a={
+    id:DB.nid('a'),
+    uid:d.uid,
+    no:d.no||newAccNo(d.type),
+    type:d.type,
+    cur:d.cur||'BDT',
+    bal:Number(d.init)||0,
+    rate:P[d.type].r,
+    mat:d.mat||null,
+    status:'active',
+    created:Date.now()
+  };
+  const accs=DB.accs();accs.push(a);DB.sa(accs);
+  if(a.bal>0)addTx({aid:a.id,type:'deposit',amt:a.bal,cur:a.cur,bal_after:a.bal,by:d.uid});
+  return a;
+}
+/* Account number = NID when available; otherwise auto-generated (passport). BDT & USD share one number */
+function accBaseNo(u){
+  if((u.doc||'nid')==='nid'&&u.nid)return String(u.nid);
+  if(u.accno)return u.accno;
+  const mine=DB.accs().filter(a=>a.uid===u.id);
+  if(mine.length)return mine[0].no;
+  return null;
+}
+function ensureTwinAcc(uid){
+  const u=findU_id(uid);
+  if(!u)return;
+  let base=accBaseNo(u);
+  if(!base){base=newAccNo('savings');updUser(uid,{accno:base});}
+  const mine=DB.accs().filter(a=>a.uid===uid);
+  if(!mine.some(a=>a.cur==='BDT'))addAcc({uid:uid,type:'savings',cur:'BDT',init:0,no:base});
+  if(!mine.some(a=>a.cur==='USD'))addAcc({uid:uid,type:'current',cur:'USD',init:0,no:base});
+}
+function findA(i){return DB.accs().find(a=>a.id===i)}
+function findA_no(n){return DB.accs().find(a=>a.no===n)}
+/* If multiple accounts share one number, pick the right one by currency */
+function findA_noAll(n){return DB.accs().filter(a=>a.no===String(n).trim())}
+function findA_noC(n,cur){const all=findA_noAll(n);if(!all.length)return null;return(cur&&all.find(a=>a.cur===cur))||all[0]}
+function updAcc(id,patch){
+  const accs=DB.accs(),i=accs.findIndex(a=>a.id===id);
+  if(i===-1)throw new Error('No accounts');
+  accs[i]={...accs[i],...patch};DB.sa(accs);
+  return accs[i];
+}
+function addTx(d){
+  const t={
+    id:DB.nid('t'),
+    aid:d.aid,
+    type:d.type,
+    amt:Number(d.amt),
+    cur:d.cur,
+    rate:d.rate||null,
+    tcur:d.tcur||null,
+    tamt:d.tamt||null,
+    bal_after:d.bal_after,
+    by:d.by||null,
+    ref:d.ref||newRef(),
+    status:'completed',
+    rev_by:null,
+    dir:d.dir||null,
+    note:d.note||null,
+    created:Date.now()
+  };
+  const txs=DB.txs();txs.unshift(t);DB.st(txs);
+  return t;
+}
+function updTx(id,patch){
+  const txs=DB.txs(),i=txs.findIndex(t=>t.id===id);
+  if(i===-1)throw new Error('No transactions');
+  txs[i]={...txs[i],...patch};DB.st(txs);
+  return txs[i];
+}
+
+const DEF_CFG={name:'Sidratul Islami Bank',ar:'بنك سدرة الإسلام',tag:'Shariah Compliant Islamic Banking',cp:'#064e3b',cl:'#059669',cg:'#d4af37',cgd:'#a8842c',usd:110,feeTransfer:5,feeCashOut:1.5,agentComm:0.4};
+function cfg(){const c=DB.cfg();return c?{...DEF_CFG,...c}:{...DEF_CFG}}
+function saveCfg(c){DB.sc(c);applyCfg()}
+function applyCfg(){
+  const c=cfg();
+  document.documentElement.style.setProperty('--p',c.cp);
+  document.documentElement.style.setProperty('--pl',c.cl);
+  document.documentElement.style.setProperty('--g',c.cg);
+  document.documentElement.style.setProperty('--gd',c.cgd);
+  const e1=document.getElementById('bn');if(e1)e1.textContent=c.name;
+  const e2=document.getElementById('hbn');if(e2)e2.textContent=c.name;
+  R.BDT=c.usd;
+  document.title=c.name;
+}
+
+let SS=null;
+function setSS(s){SS=s;DB.s('ss',s)}
+function getSS(){SS=DB.g('ss',null);return SS}
+function clrSS(){SS=null;localStorage.removeItem('ss')}
+
+/* ============ 4. UI HELPERS ============ */
+function toast(m,t){
+  t=t||'s';
+  const c=document.getElementById('tc');
+  const ic={s:'✅',e:'❌',i:'ℹ️'};
+  const el=document.createElement('div');
+  el.className='toast '+(t==='e'?'e':t==='i'?'i':'');
+  el.innerHTML='<span>'+ic[t]+'</span><span>'+m+'</span>';
+  c.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300)},3000);
+}
+function openM(h){document.getElementById('md').innerHTML=h;document.getElementById('ov').classList.add('on')}
+function closeM(){document.getElementById('ov').classList.remove('on')}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function cpNo(t){
+  const done=()=>toast('📋 Copied: '+t,'i');
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(String(t)).then(done).catch(()=>cpFb(t,done))}
+  else cpFb(t,done);
+}
+function cpFb(t,cb){
+  const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');cb&&cb()}catch(e){toast('Copy failed — type manually','e')}
+  ta.remove();
+}
+function accL(t){return P[t]?P[t].l:t}
+function txL(t){return{deposit:'Deposit',withdraw:'Withdraw',cash_in:'Cash In',cash_out:'Cash Out',exchange:'Currency Exchange',transfer:'Transfer',commission:'Commission',feeIncome:'Fee Income'}[t]||t}
+function fT(ts){try{return new Date(ts).toLocaleString('en-GB',{dateStyle:'short',timeStyle:'short'})}catch(e){return new Date(ts).toLocaleString()}}
+function fD(ts){try{return new Date(ts).toLocaleString('en-GB',{dateStyle:'medium'})}catch(e){return new Date(ts).toLocaleDateString()}}
+
+/* ============ 5. INIT ADMIN ============ */
+function initAdmin(){
+  if(DB.users().some(u=>u.role==='admin'))return;
+  // 32-char valid Base32 secret - Google Auth will accept this
+  const SEC='JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP';
+  const a=addUser({
+    name:'Super Admin',
+    email:'admin@sib.com',
+    phone:'01700000000',
+    pwd:'Admin@123',
+    role:'admin',
+    nid:'1990000000000',
+    secret:SEC,
+    status:'active'
+  });
+  updUser(a.id,{totp:1,nid_v:1});
+}
+function qrURL(text){
+  try{
+    if(typeof qrcode==='undefined')return null;
+    const q=qrcode(0,'M');q.addData(text);q.make();
+    return q.createDataURL(6,12);
+  }catch(e){return null}
+}
+function otpURL(secret,email){
+  const c=cfg();
+  return 'otpauth://totp/'+encodeURIComponent(c.name)+':'+encodeURIComponent(email)+'?secret='+secret+'&issuer='+encodeURIComponent(c.name)+'&algorithm=SHA1&digits=6&period=30';
+}
+function showSetup(e){
+  if(e)e.preventDefault();
+  if(!SS)return toast('Please login first','e');
+  const a=findU_id(SS.id);
+  if(!a)return toast('User not found','e');
+  const qr=qrURL(otpURL(a.secret,a.email));
+  openM(`
+    <div class="hn"></div>
+    <h2>🔑 TOTP Setup</h2>
+    <p class="sb">${esc(a.name)} — Scan the QR with Google Authenticator</p>
+    <div class="qr">
+      ${qr?'<img src="'+qr+'">':'<div style="padding:20px;">QR Failed to load</div>'}
+      <p style="margin-top:10px;font-size:11px;"><b>Manually (32 characters):</b></p>
+      <div class="sk">${a.secret}</div>
+    </div>
+    <div style="background:#f0fdf4;padding:12px;border-radius:10px;font-size:12px;line-height:1.8;">
+      <div><b>Email:</b> ${esc(a.email)}</div>
+      <div><b>Live Code:</b> <span id="lv" style="font-family:monospace;font-weight:800;color:var(--p);font-size:16px;"></span></div>
+    </div>
+    <button class="btn bp" style="margin-top:12px;" onclick="closeM()">Got it</button>
+  `);
+  const el=document.getElementById('lv');
+  const tk=()=>{if(!el||!document.getElementById('lv'))return;el.textContent=totp(a.secret)};
+  tk();const iv=setInterval(()=>{if(!document.getElementById('lv')){clearInterval(iv);return}tk()},1000);
+}
+
+/* ============ 6. AUTH ============ */
+function docTgl(){
+  const p=document.getElementById('rdt').value==='passport';
+  document.getElementById('rdl').textContent=p?'🛂 Passport Number (6-12 chars)':'🆔 NID Number (10-17 digits)';
+  document.getElementById('rid').inputMode=p?'text':'numeric';
+  document.getElementById('rid').value='';
+}
+function tab(t,e){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  e.target.classList.add('on');
+  document.getElementById('f-lg').style.display=t==='lg'?'block':'none';
+  document.getElementById('f-rg').style.display=t==='rg'?'block':'none';
+}
+function login(e){
+  e.preventDefault();
+  const b=document.getElementById('lbtn');b.disabled=true;b.textContent='Signing in...';
+  try{
+    const email=document.getElementById('le').value.trim().toLowerCase();
+    const pwd=document.getElementById('lp').value;
+    const code=document.getElementById('lt').value.trim();
+    const u=findU_email(email);
+    if(!u)throw new Error('Wrong email or password');
+    if(hash(pwd)!==u.pwd){log(u.id,'LOGIN_FAIL',{e:email});throw new Error('Wrong email or password')}
+    if(!u.totp)throw new Error('TOTP is not set up');
+    if(!verifyTOTP(u.secret,code)){log(u.id,'TOTP_FAIL',{e:email});throw new Error('Wrong TOTP code')}
+    if(u.status==='blocked')throw new Error('Account blocked: '+(u.reason||'Admin'));
+    if(u.status==='pending')throw new Error('Awaiting approval');
+    updUser(u.id,{last:Date.now()});
+    log(u.id,'LOGIN',{e:email});
+    setSS({id:u.id,role:u.role,name:u.name,email:u.email});
+    toast('Assalamu Alaikum, '+u.name);
+    showApp();
+  }catch(err){toast(err.message,'e')}
+  finally{b.disabled=false;b.textContent='Sign In'}
+}
+function register(e){
+  e.preventDefault();
+  const b=document.getElementById('rbtn');b.disabled=true;b.textContent='...';
+  try{
+    const doc=document.getElementById('rdt').value;
+    const d={
+      name:document.getElementById('rn').value.trim(),
+      email:document.getElementById('re').value.trim(),
+      phone:document.getElementById('rp').value.trim(),
+      nid:document.getElementById('rid').value.trim(),
+      dob:document.getElementById('rdob').value,
+      doc:doc,
+      pwd:document.getElementById('rpw').value,
+      role:'user',
+      secret:newSecret()
+    };
+    if(doc==='nid'){if(!/^\d{10,17}$/.test(d.nid))throw new Error('NID must be 10-17 digits')}
+    else{if(!/^[A-Za-z0-9]{6,12}$/.test(d.nid))throw new Error('Passport must be 6-12 letters/digits')}
+    if(!d.dob||isNaN(new Date(d.dob).getTime()))throw new Error('Enter your date of birth');
+    const age=Math.floor((Date.now()-new Date(d.dob).getTime())/(365.25*86400000));
+    if(age<18)throw new Error('You must be at least 18 years old');
+    if(!/^01[3-9]\d{8}$/.test(d.phone))throw new Error('Enter a valid mobile number');
+    const u=addUser(d);
+    ensureTwinAcc(u.id);
+    log(u.id,'REGISTER',{e:d.email});
+    document.getElementById('f-rg').reset();
+    showTOTPSetup(u);
+  }catch(err){toast(err.message,'e')}
+  finally{b.disabled=false;b.textContent='Register'}
+}
+function showTOTPSetup(u){
+  const qr=qrURL(otpURL(u.secret,u.email));
+  openM(`
+    <div class="hn"></div>
+    <h2>🔐 Google Authenticator Setup</h2>
+    <p class="sb">QR Scan, then enter the 6-digit code</p>
+    <div class="qr">
+      ${qr?'<img src="'+qr+'">':''}
+      <p style="margin-top:10px;font-size:11px;"><b>Manually:</b></p>
+      <div class="sk">${u.secret}</div>
+    </div>
+    <div class="fg"><label>🔑 6-Digit Code</label><input type="text" id="stc" class="tin" maxlength="6" inputmode="numeric" placeholder="000000"></div>
+    <button class="btn bp" onclick="verifySetup(${u.id})">Verify</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="closeM()">Do it later</button>
+  `);
+}
+function verifySetup(id){
+  const code=document.getElementById('stc').value.trim();
+  if(code.length!==6)return toast('Enter the 6-digit code','e');
+  const u=findU_id(id);
+  if(!verifyTOTP(u.secret,code))return toast('Wrong code','e');
+  updUser(id,{totp:1});
+  log(id,'TOTP_SETUP',{});
+  closeM();toast('✅ TOTP activated! Please wait for admin approval.');
+}
+function logout(){
+  if(SS)log(SS.id,'LOGOUT',{});
+  clrSS();
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('auth').style.display='flex';
+  toast('Allah Hafiz','i');
+}
+
+/* ============ 7. APP SHELL ============ */
+let V='home',FL='all',RF='all',SEARCH='',MINE=[];
+
+function showApp(){
+  document.getElementById('auth').style.display='none';
+  document.getElementById('app').classList.add('on');
+  const u=findU_id(SS.id);
+  document.getElementById('un').textContent=u.name;
+  document.getElementById('ur2').textContent=u.role.toUpperCase();
+  document.getElementById('uav').textContent=u.name.charAt(0);
+  buildNav();render();
+}
+function buildNav(){
+  const r=SS.role;let items;
+  if(r==='user')items=[{i:'home',c:'🏠',l:'Home'},{i:'accs',c:'💳',l:'Account'},{i:'exch',c:'💱',l:'Exchange'},{i:'prof',c:'👤',l:'Profile'}];
+  else if(r==='agent')items=[{i:'home',c:'🏠',l:'Home'},{i:'cash',c:'💵',l:'Cash'},{i:'accs',c:'💳',l:'Account'},{i:'prof',c:'👤',l:'Profile'}];
+  else items=[{i:'home',c:'🏠',l:'Dashboard'},{i:'users',c:'👥',l:'User'},{i:'txs',c:'📜',l:'Transactions'},{i:'more',c:'⚙️',l:'More'}];
+  document.getElementById('nv').innerHTML=items.map(x=>'<button class="ni '+(V===x.i?'on':'')+'" onclick="go(\''+x.i+'\')"><span class="ic">'+x.c+'</span><span class="lb">'+x.l+'</span></button>').join('');
+}
+function go(v){V=v;buildNav();render()}
+function loadMine(){
+  MINE=DB.accs().filter(a=>a.uid===SS.id);
+  const t=MINE.filter(a=>a.cur==='BDT').reduce((s,a)=>s+a.bal,0);
+  const u=MINE.filter(a=>a.cur==='USD').reduce((s,a)=>s+a.bal,0);
+  document.getElementById('ba').textContent=t.toFixed(2);
+  const bu=document.getElementById('bau');if(bu)bu.textContent=u.toFixed(2);
+}
+function render(){
+  const c=document.getElementById('ct');
+  c.innerHTML='<div style="text-align:center;padding:30px;color:#999;">Loading...</div>';
+  const bcard=document.getElementById('bc');
+  if(SS.role==='admin')bcard.style.display='none';
+  else{bcard.style.display='block';loadMine()}
+  try{
+    if(V==='home')SS.role==='admin'?adminHome(c):userHome(c);
+    else if(V==='accs')accsView(c);
+    else if(V==='exch')exchView(c);
+    else if(V==='cash')cashView(c);
+    else if(V==='users')usersView(c);
+    else if(V==='txs')txsView(c);
+    else if(V==='more')moreView(c);
+    else if(V==='audit')auditView(c);
+    else if(V==='nid')nidView(c);
+    else if(V==='set')setView(c);
+    else if(V==='prof')profView(c);
+  }catch(e){c.innerHTML='<div class="emp"><div class="i">⚠️</div><p>'+esc(e.message)+'</p></div>'}
+}
+
+/* ============ 8. USER HOME ============ */
+function userHome(c){
+  loadMine();
+  const r=SS.role;let acts;
+  if(r==='user')acts=[{i:'wd',c:'💸',l:'Withdraw',b:'#fee2e2',f:'#991b1b'},{i:'tf',c:'🔁',l:'Transfer',b:'#e0e7ff',f:'#3730a3'},{i:'exch',c:'💱',l:'Exchange',b:'#fef3c7',f:'#92400e'}];
+  else acts=[{i:'ci',c:'📥',l:'Cash-In',b:'#d1fae5',f:'#065f46'},{i:'co',c:'📤',l:'Cash-Out',b:'#fee2e2',f:'#991b1b'},{i:'tf',c:'🔁',l:'Transfer',b:'#e0e7ff',f:'#3730a3'},{i:'exch',c:'💱',l:'Exchange',b:'#fef3c7',f:'#92400e'},{i:'agt',c:'🏪',l:'Agent Cash Out',b:'#fce7f3',f:'#9d174d'}];
+  const accs=MINE.length?MINE.slice(0,3).map(accCard).join(''):'<div class="emp"><div class="i">💳</div><p>No accounts yet</p><button class="btn bp" onclick="go(\'accs\')">Open Account</button></div>';
+  const ids=MINE.map(a=>a.id);
+  const rec=DB.txs().filter(t=>ids.includes(t.aid)).slice(0,5);
+  c.innerHTML=`
+    <div class="nt">﴿ وَأَحَلَّ اللَّهُ الْبَيْعَ وَحَرَّمَ الرِّبَا ﴾<br><span style="font-size:10px;">"Allah has permitted trade and forbidden riba"</span></div>
+    <div class="sc"><div class="st">⚡ Quick Services</div>
+      <div class="qk">${acts.map(a=>'<button class="qb" onclick="act(\''+a.i+'\')"><div class="qi" style="background:'+a.b+';color:'+a.f+';">'+a.c+'</div><span>'+a.l+'</span></button>').join('')}</div>
+    </div>
+    <div class="sc"><div class="st">💳 My Accounts <span onclick="go('accs')">All →</span></div>${accs}</div>
+    ${rec.length?'<div class="sc"><div class="st">📜 Recent Transactions</div>'+txList(rec)+'</div>':''}
+  `;
+}
+function accCard(a){
+  return `<div class="ac ${a.type}" onclick="accDet(${a.id})"><div class="ah"><div><div class="at">${accL(a.type)}</div><div class="an"><b style="color:var(--pl);">${a.cur}</b> ${a.no} <button class="btn bsm bo" style="padding:1px 7px;font-size:10px;border-width:1px;line-height:1.5;" onclick="event.stopPropagation();cpNo('${a.no}')">📋 Copy</button></div></div><span class="bd2 b${a.status==='active'?'A':a.status==='frozen'?'F':a.status==='pending'?'P':'B'}">${a.status}</span></div><div class="ab">${a.bal.toLocaleString()} <span style="font-size:11px;opacity:.6;">${a.cur}</span></div>${a.mat?'<div style="font-size:10px;color:#999;margin-top:4px;">📅 '+a.mat+'</div>':''}</div>`;
+}
+
+/* ============ 9. ADMIN HOME ============ */
+function adminHome(c){
+  const us=DB.users(),acs=DB.accs(),txs=DB.txs();
+  const pend=us.filter(u=>u.status==='pending');
+  const tot=acs.reduce((s,a)=>s+a.bal,0);
+  const today=new Date().setHours(0,0,0,0);
+  const todayTx=txs.filter(t=>t.created>=today);
+  const ph=pend.length?`<div class="sc"><div class="st">⏳ Pending (${pend.length}) <span onclick="go('users')">All →</span></div><div class="tbl">${pend.slice(0,5).map(u=>`<div class="rw"><div class="av sm" style="background:var(--w);color:#fff;">${esc(u.name.charAt(0))}</div><div class="ii"><h4>${esc(u.name)}</h4><p>${esc(u.email)}</p></div><button class="btn bs bsm" onclick="approveU(${u.id})">✓</button><button class="btn bi bsm" onclick="userDet(${u.id})">👁</button></div>`).join('')}</div></div>`:'';
+  c.innerHTML=`
+    <div class="nt">Admin Dashboard</div>
+    <div class="sc"><div class="st">📊 Statistics</div>
+      <div class="sg">
+        <div class="sc2"><div class="l">Total Users</div><div class="v">${us.length}</div></div>
+        <div class="sc2"><div class="l">Active</div><div class="v">${us.filter(u=>u.status==='active').length}</div></div>
+        <div class="sc2"><div class="l">Account</div><div class="v">${acs.length}</div></div>
+        <div class="sc2"><div class="l">Today's Transactions</div><div class="v">${todayTx.length}</div></div>
+        <div class="sc2 gold" style="grid-column:span 2;"><div class="l">Total Assets</div><div class="v">৳ ${tot.toLocaleString()}</div></div>
+      </div>
+    </div>
+    <div class="sc"><div class="st">⚡ Quick</div>
+      <div class="qk">
+        <button class="qb" onclick="go('users')"><div class="qi" style="background:#dbeafe;color:#1e40af;">👥</div><span>User</span></button>
+        <button class="qb" onclick="newAgent()"><div class="qi" style="background:#fef3c7;color:#92400e;">🤝</div><span>Agent</span></button>
+        <button class="qb" onclick="go('txs')"><div class="qi" style="background:#d1fae5;color:#065f46;">📜</div><span>Transactions</span></button>
+        <button class="qb" onclick="go('nid')"><div class="qi" style="background:#e0e7ff;color:#3730a3;">🆔</div><span>NID</span></button>
+        <button class="qb" onclick="admBalM()"><div class="qi" style="background:#fce7f3;color:#9d174d;">💰</div><span>Balance</span></button>
+      </div>
+    </div>
+    ${ph}
+    <div class="sc"><div class="st">📜 Recent Transactions <span onclick="go('txs')">All →</span></div>${txList(txs.slice(0,6))}</div>
+  `;
+}
+
+/* ============ 10. ACCOUNTS ============ */
+function accsView(c){
+  loadMine();
+  c.innerHTML=`<div class="sc"><div class="st">💳 My Accounts <span style="font-size:10px;color:var(--tl);">Every customer gets BDT + USD accounts</span></div>${MINE.length?MINE.map(accCard).join(''):'<div class="emp"><div class="i">💳</div><p>Accounts are being created — visible after admin approval</p></div>'}</div>`;
+}
+
+/* ============ 11. EXCHANGE ============ */
+function exchView(c){
+  const fl={USD:'🇺🇸',EUR:'🇪🇺',GBP:'🇬🇧',INR:'🇮🇳',JPY:'🇯🇵',AUD:'🇦🇺',CAD:'🇨🇦',CHF:'🇨🇭',CNY:'🇨🇳',SGD:'🇸🇬',AED:'🇦🇪',SAR:'🇸🇦',MYR:'🇲🇾'};
+  const rows=Object.keys(R).filter(k=>k!=='BDT').map(k=>{const r=rate('BDT',k);return `<div class="tx"><div class="ti" style="background:#d1fae5;color:var(--p);font-weight:700;">${fl[k]||k}</div><div class="in"><h4>${k}</h4><p>1 BDT =</p></div><div class="tam">${r.toFixed(4)}</div></div>`}).join('');
+  c.innerHTML=`<div class="sc"><div class="st">💱 Exchange Rates (BDT base) <span style="font-size:10px;color:var(--tl);">Exchange fee: 10 BDT</span></div>${rows}</div><button class="btn bp" onclick="exchM()">💱 Currency Exchange</button>`;
+}
+
+/* ============ 12. CASH ============ */
+function cashView(c){
+  c.innerHTML=`<div class="sc"><div class="st">💵 Cash Services</div><div style="display:grid;gap:10px;"><button class="btn bs" style="padding:18px;font-size:15px;" onclick="ciM()">📥 Cash In</button><button class="btn bd" style="padding:18px;font-size:15px;" onclick="coM()">📤 Cash Out</button></div></div>`;
+}
+
+/* ============ 13. USERS ============ */
+function usersView(c){
+  const us=DB.users();
+  let list=us.slice().sort((a,b)=>b.created-a.created);
+  if(FL!=='all')list=list.filter(u=>u.status===FL);
+  if(RF!=='all')list=list.filter(u=>u.role===RF);
+  if(SEARCH){const s=SEARCH.toLowerCase();list=list.filter(u=>u.name.toLowerCase().includes(s)||u.email.toLowerCase().includes(s)||u.phone.includes(s)||u.nid.includes(s))}
+  const cnt={all:us.length,pending:us.filter(u=>u.status==='pending').length,active:us.filter(u=>u.status==='active').length,blocked:us.filter(u=>u.status==='blocked').length};
+  c.innerHTML=`
+    <div class="sc">
+      <div class="st">👥 User Management</div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;">
+        <button class="btn bp bsm" style="flex:1;padding:9px;" onclick="newAgent()">➕ Agent</button>
+        <button class="btn bi bsm" style="flex:1;padding:9px;" onclick="newAdmin()">👑 Admin</button>
+      </div>
+      <div class="sb2"><input type="text" id="us" placeholder="Name, email, NID..." value="${esc(SEARCH)}" oninput="SEARCH=this.value;clearTimeout(window._t);window._t=setTimeout(()=>usersView(document.getElementById('ct')),300)"></div>
+      <div class="ch">
+        <div class="cp2 ${FL==='all'?'on':''}" onclick="FL='all';usersView(document.getElementById('ct'))">All (${cnt.all})</div>
+        <div class="cp2 ${FL==='pending'?'on':''}" onclick="FL='pending';usersView(document.getElementById('ct'))">⏳ (${cnt.pending})</div>
+        <div class="cp2 ${FL==='active'?'on':''}" onclick="FL='active';usersView(document.getElementById('ct'))">✅ (${cnt.active})</div>
+        <div class="cp2 ${FL==='blocked'?'on':''}" onclick="FL='blocked';usersView(document.getElementById('ct'))">🚫 (${cnt.blocked})</div>
+      </div>
+      <div class="ch">
+        <div class="cp2 ${RF==='all'?'on':''}" onclick="RF='all';usersView(document.getElementById('ct'))">Everyone</div>
+        <div class="cp2 ${RF==='user'?'on':''}" onclick="RF='user';usersView(document.getElementById('ct'))">👤 Customer</div>
+        <div class="cp2 ${RF==='agent'?'on':''}" onclick="RF='agent';usersView(document.getElementById('ct'))">🤝 Agent</div>
+        <div class="cp2 ${RF==='admin'?'on':''}" onclick="RF='admin';usersView(document.getElementById('ct'))">👑 Admin</div>
+      </div>
+      ${list.length?`<div class="tbl">${list.map(u=>{
+        const accs=DB.accs().filter(a=>a.uid===u.id);
+        const bal=accs.reduce((s,a)=>s+a.bal,0);
+        const bg=u.status==='active'?'var(--p)':u.status==='pending'?'var(--w)':'var(--d)';
+        return `<div class="rw"><div class="av sm" style="background:${bg};color:#fff;">${esc(u.name.charAt(0))}</div><div class="ii"><h4>${esc(u.name)} <span class="rl r${u.role==='admin'?'Admin':u.role==='agent'?'Agent':'User'}">${u.role}</span></h4><p>${esc(u.email)} • ৳${bal.toLocaleString()}</p></div><button class="btn bp bsm" onclick="userDet(${u.id})">Manage</button></div>`;
+      }).join('')}</div>`:'<div class="emp"><div class="i">🔍</div><p>No users found</p></div>'}
+    </div>
+  `;
+}
+
+/* ============ 14. USER DETAIL ============ */
+function userDet(id){
+  const u=findU_id(id);
+  if(!u)return toast('none','e');
+  const accs=DB.accs().filter(a=>a.uid===u.id);
+  const ids=accs.map(a=>a.id);
+  const txs=DB.txs().filter(t=>ids.includes(t.aid)).slice(0,10);
+  const tot=accs.reduce((s,a)=>s+a.bal,0);
+  const accsH=accs.length?accs.map(a=>`<div class="ac ${a.type}" style="cursor:default;"><div class="ah"><div><div class="at">${accL(a.type)}</div><div class="an">${a.no}</div></div><span class="bd2 b${a.status==='active'?'A':'F'}">${a.status}</span></div><div class="ab">${a.bal.toLocaleString()} ${a.cur}</div><div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">${a.status==='active'?`<button class="btn bw bsm" onclick="freezeA(${a.id},${u.id})">🧊 Freeze</button>`:`<button class="btn bs bsm" onclick="unfreezeA(${a.id},${u.id})">✅ Enable</button>`}<button class="btn bi bsm" onclick="adjM(${a.id},${u.id})">💰 Adjust</button></div></div>`).join(''):'<p style="font-size:12px;color:#999;padding:8px;">No accounts</p>';
+  openM(`
+    <div class="hn"></div>
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px;">
+      <div class="av lg" style="background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;">${esc(u.name.charAt(0))}</div>
+      <div style="flex:1;"><h2 style="margin-bottom:3px;">${esc(u.name)}</h2><div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="bd2 b${u.status==='active'?'A':u.status==='pending'?'P':'B'}">${u.status}</span><span class="rl r${u.role==='admin'?'Admin':u.role==='agent'?'Agent':'User'}">${u.role}</span></div></div>
+    </div>
+    <div style="background:#f8fafc;padding:11px;border-radius:11px;margin-bottom:11px;">
+      <div class="ir"><span class="l">🆔 ID</span><span class="v">#${u.id}</span></div>
+      <div class="ir"><span class="l">📧 Email</span><span class="v">${esc(u.email)}</span></div>
+      <div class="ir"><span class="l">📱 Mobile</span><span class="v">${esc(u.phone)}</span></div>
+<div class="ir"><span class="l">📄 Document</span><span class="v">${u.doc==='passport'?'🛂 Passport':'🆔 NID'} — ${esc(u.nid)}</span></div>
+      <div class="ir"><span class="l">🎂 Date of Birth</span><span class="v">${u.dob?fD(u.dob):'—'}</span></div>
+      <div class="ir"><span class="l">🔐 TOTP</span><span class="v">${u.totp?'✅ Active':'❌ Disabled'}</span></div>
+      <div class="ir"><span class="l">📅 Registered</span><span class="v">${fD(u.created)}</span></div>
+      ${u.last?'<div class="ir"><span class="l">🕐 Last Login</span><span class="v">'+fT(u.last)+'</span></div>':''}
+      <div class="ir"><span class="l">🔑 Password</span><span class="v">${u.pwd_at?fD(u.pwd_at):'—'}</span></div>
+      <div class="ir"><span class="l">💰 Total</span><span class="v" style="color:#10b981;">৳${tot.toLocaleString()}</span></div>
+      ${u.reason?'<div class="ir"><span class="l">🚫 Reason</span><span class="v" style="color:var(--d);">'+esc(u.reason)+'</span></div>':''}
+    </div>
+    <div style="background:#f0fdf4;padding:11px;border-radius:11px;margin-bottom:11px;">
+      <div style="font-size:12px;font-weight:700;color:var(--p);margin-bottom:7px;">🎛️ Controls</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${u.status==='pending'?`<button class="btn bs bsm" onclick="approveU(${u.id},1)">✅ Approve</button>`:u.status==='active'?`<button class="btn bd bsm" onclick="blockM(${u.id})">🚫 Block</button>`:`<button class="btn bs bsm" onclick="unblockU(${u.id},1)">🔓 Unblock</button>`}
+        <button class="btn bi bsm" onclick="roleM(${u.id})">🎭 Role</button>
+        <button class="btn bw bsm" onclick="resetPwdM(${u.id})">🔑 Reset Password</button>
+        <button class="btn bo bsm" onclick="resetTOTPM(${u.id})">🔐 Reset TOTP</button>
+        <button class="btn bd bsm" onclick="delM(${u.id})">🗑️ Delete</button>
+      </div>
+    </div>
+    <div style="margin-bottom:11px;"><div style="font-size:12px;font-weight:700;color:var(--p);margin-bottom:7px;">💳 Accounts (${accs.length})</div>${accsH}</div>
+    <div style="margin-bottom:11px;"><div style="font-size:12px;font-weight:700;color:var(--p);margin-bottom:7px;">📜 Recent</div>${txList(txs)}</div>
+    <button class="btn bo" onclick="closeM()">Disabled</button>
+  `);
+}
+function approveU(id,fromDet){
+  try{
+    updUser(id,{status:'active',nid_v:1});
+    ensureTwinAcc(id);
+    log(SS.id,'USER_APPROVED',{t:id});
+    toast('✅ Approved');closeM();
+    if(fromDet)setTimeout(()=>userDet(id),200);
+    else usersView(document.getElementById('ct'));
+  }catch(e){toast(e.message,'e')}
+}
+function blockM(id){
+  openM(`<div class="hn"></div><h2>🚫 Block</h2><p class="sb">Enter a reason (optional)</p><div class="fg"><input type="text" id="br" placeholder="Reason"></div><button class="btn bd" onclick="blockC(${id})">Block</button><button class="btn bo" style="margin-top:8px;" onclick="userDet(${id})">Cancel</button>`);
+}
+function blockC(id){
+  const r=document.getElementById('br').value.trim();
+  updUser(id,{status:'blocked',reason:r});
+  log(SS.id,'USER_BLOCKED',{t:id,reason:r});
+  toast('🚫 Block');closeM();setTimeout(()=>userDet(id),200);
+}
+function unblockU(id,fromDet){
+  updUser(id,{status:'active',reason:''});
+  log(SS.id,'USER_UNBLOCKED',{t:id});
+  toast('✅ Enable');closeM();
+  if(fromDet)setTimeout(()=>userDet(id),200);
+  else usersView(document.getElementById('ct'));
+}
+function roleM(id){
+  const u=findU_id(id);
+  openM(`<div class="hn"></div><h2>🎭 Change Role</h2><p class="sb">${esc(u.name)}</p><div class="fg"><label>New Role</label><select id="nr"><option value="user" ${u.role==='user'?'selected':''}>👤 customer</option><option value="agent" ${u.role==='agent'?'selected':''}>🤝 Agent</option><option value="admin" ${u.role==='admin'?'selected':''}>👑 Admin</option></select></div><button class="btn bp" onclick="roleC(${id})">Change</button><button class="btn bo" style="margin-top:8px;" onclick="userDet(${id})">Cancel</button>`);
+}
+function roleC(id){
+  const r=document.getElementById('nr').value;
+  updUser(id,{role:r});
+  log(SS.id,'ROLE_CHANGED',{t:id,role:r});
+  toast('✅ '+r.toUpperCase());closeM();setTimeout(()=>userDet(id),200);
+}
+function resetPwdM(id){
+  const p='SIB@'+Math.random().toString(36).slice(2,8).toUpperCase();
+  openM(`<div class="hn"></div><h2>🔑 Reset Password</h2><p class="sb">Give this new password to the customer</p><div class="fg"><label>New Password</label><input type="text" id="np" value="${p}"><div class="hint">Inform the customer</div></div><button class="btn bp" onclick="resetPwdC(${id})">Reset</button><button class="btn bo" style="margin-top:8px;" onclick="userDet(${id})">Cancel</button>`);
+}
+function resetPwdC(id){
+  const p=document.getElementById('np').value.trim();
+  if(p.length<6)return toast('At least 6 characters','e');
+  updUser(id,{pwd:hash(p),pwd_at:Date.now()});
+  log(SS.id,'PWD_RESET',{t:id});
+  toast('✅ '+p);closeM();setTimeout(()=>userDet(id),200);
+}
+function resetTOTPM(id){
+  if(!confirm('Reset TOTP now?'))return;
+  const ns=newSecret();
+  updUser(id,{secret:ns,totp:0});
+  log(SS.id,'TOTP_RESET',{t:id});
+  const u=findU_id(id);
+  const qr=qrURL(otpURL(ns,u.email));
+  openM(`<div class="hn"></div><h2>🔐 Reset TOTP</h2><p class="sb">Show this QR to the customer</p><div class="qr">${qr?'<img src="'+qr+'">':''}<div class="sk">${ns}</div></div><button class="btn bp" onclick="closeM();userDet(${id})">Got it</button>`);
+}
+function delM(id){
+  const u=findU_id(id);
+  const accs=DB.accs().filter(a=>a.uid===id);
+  openM(`<div class="hn"></div><h2 style="color:var(--d);">🗑️ Delete</h2><p class="sb">This cannot be undone</p>
+    <div style="background:#fef2f2;padding:12px;border-radius:11px;border:1px solid #fecaca;margin-bottom:12px;font-size:12px;line-height:1.8;">
+      <div><b>${esc(u.name)}</b></div><div>${esc(u.email)}</div><div>Accounts: ${accs.length}</div>
+    </div>
+    <div class="fg"><label>Type the exact customer name to confirm</label><input type="text" id="cn" placeholder="${esc(u.name)}"><div class="hint">Type the exact name or "DELETE" in capital letters</div></div>
+    <button class="btn bd" onclick="delC(${id})">Delete</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="userDet(${id})">Cancel</button>`);
+}
+function delC(id){
+  const u=findU_id(id);
+  const inp=document.getElementById('cn').value.trim();
+  const ok=inp===u.name || inp.toUpperCase()==='DELETE';
+  if(!ok)return toast('Type the exact name or DELETE','e');
+  if(id===SS.id)return toast('You cannot delete yourself','e');
+  log(SS.id,'USER_DELETED',{t:id,email:u.email});
+  delUser(id);
+  toast('🗑️ Deleted');closeM();usersView(document.getElementById('ct'));
+}
+
+/* ============ 15. CREATE STAFF ============ */
+function newAgent(){newStaff('agent')}
+function newAdmin(){newStaff('admin')}
+function newStaff(role){
+  const sec=newSecret();
+  const pw='SIB@'+Math.random().toString(36).slice(2,8).toUpperCase();
+  openM(`
+    <div class="hn"></div>
+    <h2>${role==='agent'?'🤝 New Agent':'👑 New Admin'}</h2>
+    <p class="sb">Will be created instantly</p>
+    <div class="fg"><label>👤 Name</label><input type="text" id="sn"></div>
+    <div class="fg"><label>📧 Email</label><input type="email" id="se"></div>
+    <div class="fg"><label>📱 Mobile</label><input type="tel" id="sp" placeholder="01712345678"></div>
+    <div class="fg"><label>🆔 NID</label><input type="text" id="sid" inputmode="numeric"></div>
+    <div class="fg"><label>🔒 Password</label><input type="text" id="spw" value="${pw}"></div>
+    <button class="btn bp" onclick="newStaffC('${role}','${sec}')">Create</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="closeM()">Cancel</button>
+  `);
+}
+function newStaffC(role,sec){
+  try{
+    const name=document.getElementById('sn').value.trim();
+    const email=document.getElementById('se').value.trim();
+    const phone=document.getElementById('sp').value.trim();
+    const nid=document.getElementById('sid').value.trim();
+    const pw=document.getElementById('spw').value.trim();
+    if(!name||!email||!phone||!nid||!pw)throw new Error('Please fill in all fields');
+    if(!/^01[3-9]\d{8}$/.test(phone))throw new Error('Valid mobile required');
+    if(!/^\d{10,17}$/.test(nid))throw new Error('NID must be 10-17 digits');
+    if(pw.length<6)throw new Error('Password must be at least 6 characters');
+    const u=addUser({name,email,phone,pwd:pw,role,nid,secret:sec,status:'active'});
+    updUser(u.id,{totp:1,nid_v:1});
+    ensureTwinAcc(u.id);
+    log(SS.id,'STAFF_CREATED',{role,email});
+    const qr=qrURL(otpURL(sec,email));
+    openM(`
+      <div class="hn"></div>
+      <h2>✅ ${role==='agent'?'Agent':'Admin'} Created</h2>
+      <p class="sb">Scan the QR — ${esc(name)}</p>
+      <div class="qr">${qr?'<img src="'+qr+'">':''}<div class="sk">${sec}</div></div>
+      <div style="background:#f0fdf4;padding:12px;border-radius:10px;font-size:12px;line-height:1.9;">
+        <div><b>Email:</b> ${esc(email)}</div>
+        <div><b>Password:</b> ${esc(pw)}</div>
+        <div><b>Role:</b> ${role.toUpperCase()}</div>
+      </div>
+      <button class="btn bp" style="margin-top:12px;" onclick="closeM();go('users')">Got it</button>
+    `);
+  }catch(e){toast(e.message,'e')}
+}
+
+/* ============ 16. ACC ACTIONS ============ */
+function freezeA(aid,uid){updAcc(aid,{status:'frozen'});log(SS.id,'ACC_FROZEN',{a:aid});toast('🧊 Freeze');closeM();setTimeout(()=>userDet(uid),200)}
+function unfreezeA(aid,uid){updAcc(aid,{status:'active'});log(SS.id,'ACC_UNFROZEN',{a:aid});toast('✅ Enable');closeM();setTimeout(()=>userDet(uid),200)}
+function adjM(aid,uid){
+  const a=findA(aid);
+  openM(`<div class="hn"></div><h2>💰 Balance Adjustment</h2><p class="sb">${a.no} — Current: ৳${a.bal.toLocaleString()}</p>
+    <div class="fg"><label>Type</label><select id="at"><option value="add">➕ Add</option><option value="sub">➖ Deduct</option><option value="set">🎯 Set</option></select></div>
+    <div class="aw"><span class="sy">৳</span><input type="number" id="aa" class="ai" min="0" step="0.01"></div>
+    <div class="fg"><label>Reason</label><input type="text" id="ar" placeholder="Correction"></div>
+    <button class="btn bp" onclick="adjC(${aid},${uid})">Adjust</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="userDet(${uid})">Cancel</button>`);
+}
+function adjC(aid,uid){
+  const t=document.getElementById('at').value;
+  const amt=parseFloat(document.getElementById('aa').value);
+  const r=document.getElementById('ar').value.trim();
+  if(!(amt>=0))return toast('Invalid amount','e');
+  const a=findA(aid);
+  let nb=a.bal,ty='deposit';
+  if(t==='add'){nb+=amt;ty='deposit'}
+  else if(t==='sub'){if(a.bal<amt)return toast('Insufficient balance','e');nb-=amt;ty='withdraw'}
+  else{nb=amt;ty=amt>=a.bal?'deposit':'withdraw'}
+  updAcc(aid,{bal:nb});
+  addTx({aid,type:ty,amt:Math.abs(nb-a.bal),cur:a.cur,bal_after:nb,by:SS.id});
+  log(SS.id,'BAL_ADJ',{a:aid,amt,reason:r});
+  toast('✅ ৳'+nb.toLocaleString());closeM();setTimeout(()=>userDet(uid),200);
+}
+/* ============ ADMIN DIRECT BALANCE TOOL ============ */
+function admBalM(){
+  openM(`<div class="hn"></div><h2>💰 Add / Deduct Balance</h2><p class="sb">To any customer or agent account</p>
+    <div class="fg"><label>Account Number</label><input type="text" id="abn" inputmode="numeric" placeholder="e.g. 100123456789" oninput="prevAB()"></div>
+    <div id="abp" style="background:rgba(212,175,55,.1);border-left:3px solid var(--g);padding:10px;border-radius:8px;margin-bottom:11px;font-size:12px;">Enter account number (NID)...</div>
+    <div class="fg" id="abcw" style="display:none;"><label>Which account (multiple on same number)</label><select id="abc"></select></div>
+    <div class="fg"><label>Type</label><select id="abt"><option value="add">➕ Add Balance</option><option value="sub">➖ Deduct Balance</option><option value="set">🎯 Set Exact Amount</option></select></div>
+    <div class="aw"><span class="sy">৳</span><input type="number" id="aba" class="ai" min="0" step="0.01" placeholder="0.00"></div>
+    <div class="fg"><label>Reason</label><input type="text" id="abr" placeholder="e.g. cash deposit / correction"></div>
+    <button class="btn bp" onclick="admBalC()">Confirm</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="closeM()">Cancel</button>`);
+}
+function prevAB(){
+  const no=(document.getElementById('abn')?.value||'').trim();
+  const box=document.getElementById('abp');
+  if(!box)return;
+  const w=document.getElementById('abcw'),sel=document.getElementById('abc');
+  const all=findA_noAll(no);
+  if(!all.length){box.textContent=no.length>=6?'❌ No account found with this number':'Enter account number (NID)...';if(w)w.style.display='none';return}
+  const a=all[0];
+  const o=findU_id(a.uid);
+  const rn=o?{user:'Customer',agent:'Agent',admin:'Admin'}[o.role]:'';
+  const rl=o?(o.role==='admin'?'Admin':o.role==='agent'?'Agent':'User'):'User';
+  box.innerHTML='<div><b>Owner:</b> '+esc(o?o.name:'—')+' <span class="rl r'+rl+'">'+rn+'</span></div><div><b>Account Number:</b> '+a.no+' ('+all.length+' account(s))</div><div><b>Status:</b> '+all.map(x=>x.cur+'='+x.status).join(', ')+'</div>';
+  if(w&&sel){
+    if(all.length>1){w.style.display='block';sel.innerHTML=all.map(x=>'<option value="'+x.id+'">'+x.cur+' — '+accL(x.type)+' — balance '+x.bal.toLocaleString()+'</option>').join('');}
+    else{w.style.display='none';sel.innerHTML='';}
+  }
+}
+function admBalC(){
+  try{
+    const no=document.getElementById('abn').value.trim();
+    const t=document.getElementById('abt').value;
+    const amt=parseFloat(document.getElementById('aba').value);
+    const r=document.getElementById('abr').value.trim();
+    if(t!=='set'&&!(amt>0))throw new Error('Invalid amount ');
+    if(t==='set'&&!(amt>=0))throw new Error('Invalid amount ');
+    const all=findA_noAll(no);
+    if(!all.length)throw new Error('Account not found');
+    const pick=parseInt(document.getElementById('abc')?.value);
+    const a=(all.length>1&&all.find(x=>x.id===pick))||all.find(x=>x.cur==='BDT')||all[0];
+    const o=findU_id(a.uid);
+    let nb=a.bal,ty='deposit';
+    if(t==='add'){nb=a.bal+amt;ty='deposit'}
+    else if(t==='sub'){if(a.bal<amt)throw new Error('Insufficient balance (has '+a.bal.toFixed(2)+')');nb=a.bal-amt;ty='withdraw'}
+    else{nb=amt;ty=amt>=a.bal?'deposit':'withdraw'}
+    updAcc(a.id,{bal:nb});
+    const diff=Math.abs(nb-a.bal);
+    if(diff>0)addTx({aid:a.id,type:ty,amt:diff,cur:a.cur,bal_after:nb,by:SS.id,note:'Admin adjustment'+(r?': '+r:'')});
+    log(SS.id,'BAL_ADJ',{a:a.id,owner:o?o.email:'',role:o?o.role:'',amt,mode:t,reason:r});
+    closeM();toast('✅ '+esc(o?o.name:'')+' — New balance: '+nb.toLocaleString()+' '+a.cur);render();
+  }catch(e){toast(e.message,'e')}
+}
+
+/* ============ 17. ALL TXS ============ */
+function txsView(c){
+  const txs=DB.txs();
+  c.innerHTML=`<div class="sc"><div class="st">📜 All Transactions (${txs.length})</div>${txs.length?`<div class="tbl">${txs.slice(0,100).map(t=>{const a=findA(t.aid);const ic=t.type==='deposit'||t.type==='cash_in'?'💰':t.type==='withdraw'||t.type==='cash_out'?'💸':t.type==='exchange'?'💱':'💳';const bg=t.type==='deposit'||t.type==='cash_in'?'#d1fae5':'#fee2e2';return `<div class="rw"><div class="ti" style="background:${bg};">${ic}</div><div class="ii"><h4>${txL(t.type)} ${t.status==='reversed'?'<span class="bd2 bR">Reversed</span>':''}</h4><p>${a?a.no:'—'} • ৳${t.amt.toLocaleString()} • ${fT(t.created)}</p></div>${t.status!=='reversed'&&t.type!=='transfer'?`<button class="btn bw bsm" onclick="revM(${t.id})">↩️</button>`:''}</div>`}).join('')}</div>`:'<div class="emp"><div class="i">📜</div><p>No transactions</p></div>'}</div>`;
+}
+function revM(tid){
+  const t=DB.txs().find(x=>x.id===tid);
+  if(!t)return toast('none','e');
+  const a=findA(t.aid);
+  openM(`<div class="hn"></div><h2>↩️ Reverse</h2><p class="sb">Balance will be restored</p>
+    <div style="background:#fef3c7;padding:11px;border-radius:11px;margin-bottom:12px;font-size:12px;line-height:1.8;">
+      <div><b>Type:</b> ${txL(t.type)}</div><div><b>Amount:</b> ৳${t.amt.toLocaleString()}</div><div><b>Account:</b> ${a?a.no:'—'}</div>
+    </div>
+    <button class="btn bd" onclick="revC(${tid})">Reverse</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="closeM()">Cancel</button>`);
+}
+function revC(tid){
+  try{
+    const t=DB.txs().find(x=>x.id===tid);
+    if(t.status==='reversed')throw new Error('Already reversed');
+    if(t.type==='transfer')throw new Error('Transfers cannot be reversed');
+    const a=findA(t.aid);
+    if(!a)throw new Error('No accounts');
+    const inc=['deposit','cash_in'];
+    let nb;
+    if(inc.includes(t.type)){if(a.bal<t.amt)throw new Error('Insufficient balance');nb=a.bal-t.amt}
+    else nb=a.bal+t.amt;
+    updAcc(a.id,{bal:nb});
+    updTx(tid,{status:'reversed',rev_by:SS.id});
+    addTx({aid:a.id,type:inc.includes(t.type)?'withdraw':'deposit',amt:t.amt,cur:t.cur,bal_after:nb,by:SS.id});
+    log(SS.id,'TX_REVERSED',{t:tid});
+    toast('↩️ Reversed');closeM();txsView(document.getElementById('ct'));
+  }catch(e){toast(e.message,'e')}
+}
+
+/* ============ 18. NID ============ */
+function nidView(c){
+  c.innerHTML=`<div class="sc"><div class="st">🆔 Document Search</div><div class="fg"><label>NID / Passport Number</label><input type="text" id="nq" placeholder="NID or passport number"></div><button class="btn bp" onclick="doNID()">🔍 Search</button></div><div id="nr"></div>`;
+}
+function doNID(){
+  const n=document.getElementById('nq').value.trim();
+  const box=document.getElementById('nr');
+  if(!n)return toast('NID ','e');
+  const u=findU_nid(n);
+  if(!u){box.innerHTML='<div class="emp"><div class="i">❌</div><p>not found</p></div>';return}
+  const accs=DB.accs().filter(a=>a.uid===u.id);
+  const ids=accs.map(a=>a.id);
+  const txs=DB.txs().filter(t=>ids.includes(t.aid)).slice(0,20);
+  const tot=accs.reduce((s,a)=>s+a.bal,0);
+  log(SS.id,'NID_SEARCH',{nid:n});
+  box.innerHTML=`<div class="sc"><div class="st">👤 Customer Info</div>
+    <div style="background:#fff;padding:13px;border-radius:12px;box-shadow:var(--sh);border:1px solid var(--b);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;"><div style="font-size:16px;font-weight:800;color:var(--p);">${esc(u.name)}</div><button class="btn bp bsm" onclick="userDet(${u.id})">Manage</button></div>
+      <div class="ir"><span class="l">📧 Email</span><span class="v">${esc(u.email)}</span></div>
+      <div class="ir"><span class="l">📱 Mobile</span><span class="v">${esc(u.phone)}</span></div>
+<div class="ir"><span class="l">📄 Document</span><span class="v">${u.doc==='passport'?'🛂 Passport':'🆔 NID'} — ${esc(u.nid)}</span></div>
+      <div class="ir"><span class="l">🎂 Date of Birth</span><span class="v">${u.dob?fD(u.dob):'—'}</span></div>
+      <div class="ir"><span class="l">👥 Role</span><span class="v">${u.role.toUpperCase()}</span></div>
+      <div class="ir"><span class="l">📊 Status</span><span class="v">${u.status}</span></div>
+      <div class="ir"><span class="l">💰 Assets</span><span class="v" style="color:#10b981;">৳${tot.toLocaleString()}</span></div>
+    </div>
+  </div>
+  <div class="sc"><div class="st">💳 Accounts (${accs.length})</div>${accs.length?accs.map(accCard).join(''):'<p style="font-size:12px;padding:8px;color:#999;">none</p>'}</div>
+  <div class="sc"><div class="st">📜 Recent</div>${txList(txs)}</div>`;
+}
+
+/* ============ 19. AUDIT ============ */
+function auditView(c){
+  const logs=DB.logs();
+  c.innerHTML=`<div class="sc"><div class="st">📋 Audit Log (${logs.length})</div>${logs.length?`<div class="tbl">${logs.slice(0,200).map(l=>{const u=l.u?findU_id(l.u):null;return `<div class="rw" style="align-items:flex-start;"><div style="font-size:10px;color:#999;min-width:70px;">${fT(l.t)}</div><div class="ii"><h4 style="font-size:11px;">${esc(l.act)}</h4><p>${u?esc(u.name):'System'}</p><p style="font-size:9px;word-break:break-all;">${esc(l.d)}</p></div></div>`}).join('')}</div>`:'<div class="emp"><div class="i">📋</div><p>No logs</p></div>'}</div><button class="btn bo" onclick="go('more')">← Back</button>`;
+}
+
+/* ============ 20. MORE + SETTINGS ============ */
+function moreView(c){
+  c.innerHTML=`
+    <div class="sc"><div class="st">⚙️ More Options</div>
+      <div style="display:grid;gap:9px;">
+        <button class="btn bp" style="padding:15px;justify-content:flex-start;" onclick="go('audit')"><span style="font-size:19px;">📋</span><span style="flex:1;text-align:left;margin-left:9px;">Audit Log</span> →</button>
+        <button class="btn bp" style="padding:15px;justify-content:flex-start;" onclick="go('nid')"><span style="font-size:19px;">🆔</span><span style="flex:1;text-align:left;margin-left:9px;">Document Search</span> →</button>
+        <button class="btn" style="padding:15px;justify-content:flex-start;background:linear-gradient(135deg,#9d174d,#be185d);color:#fff;" onclick="admBalM()"><span style="font-size:19px;">💰</span><span style="flex:1;text-align:left;margin-left:9px;">Add Balance / Deduct</span> →</button>
+        <button class="btn" style="padding:15px;justify-content:flex-start;background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;" onclick="go('set')"><span style="font-size:19px;">🎨</span><span style="flex:1;text-align:left;margin-left:9px;">Customize Bank</span> →</button>
+        <button class="btn bi" style="padding:15px;justify-content:flex-start;" onclick="newAgent()"><span style="font-size:19px;">🤝</span><span style="flex:1;text-align:left;margin-left:9px;">New Agent</span> →</button>
+        <button class="btn bi" style="padding:15px;justify-content:flex-start;" onclick="newAdmin()"><span style="font-size:19px;">👑</span><span style="flex:1;text-align:left;margin-left:9px;">New Admin</span> →</button>
+        <button class="btn bw" style="padding:15px;justify-content:flex-start;" onclick="changePwdM()"><span style="font-size:19px;">🔑</span><span style="flex:1;text-align:left;margin-left:9px;">My Password Change</span> →</button>
+        <button class="btn bo" style="padding:15px;justify-content:flex-start;" onclick="showSetup(event)"><span style="font-size:19px;">🔐</span><span style="flex:1;text-align:left;margin-left:9px;">My TOTP View</span> →</button>
+        <button class="btn bd" style="padding:15px;justify-content:flex-start;" onclick="resetM()"><span style="font-size:19px;">🗑️</span><span style="flex:1;text-align:left;margin-left:9px;">Erase All Data</span> →</button>
+      </div>
+    </div>
+    <div class="sc"><div class="st">📊 Status</div>
+      <div class="sg">
+        <div class="sc2"><div class="l">User</div><div class="v">${DB.users().length}</div></div>
+        <div class="sc2"><div class="l">Account</div><div class="v">${DB.accs().length}</div></div>
+        <div class="sc2"><div class="l">Transactions</div><div class="v">${DB.txs().length}</div></div>
+        <div class="sc2"><div class="l">Audit</div><div class="v">${DB.logs().length}</div></div>
+      </div>
+    </div>
+    <div class="sc"><div class="st">☁️ Cloud Sync (Firebase)</div>
+      <div class="sc2 ${FB?'gold':''}" style="margin-bottom:8px;"><div class="l">Status</div><div class="v" style="font-size:14px;">${FB?(navigator.onLine?'✅ Active — auto syncing':'🟠 Offline — will sync when online'):'⚠️ Config not set (running in local mode)'}</div></div>
+      <button class="btn bp" style="padding:11px;font-size:13px;" onclick="fbPush();toast('☁️ Synced','i')" ${FB?'':'disabled'}>☁️ Sync Now</button>
+    </div>
+  `;
+}
+function setView(c){
+  const s=cfg();
+  c.innerHTML=`
+    <div class="sc"><div class="st">🎨 Customize Bank</div>
+      <div class="fg"><label>Bank Name</label><input type="text" id="cn" value="${esc(s.name)}"></div>
+      <div class="fg"><label>Arabic Name</label><input type="text" id="ca" value="${esc(s.ar)}" style="direction:rtl;"></div>
+      <div class="fg"><label>Tagline</label><input type="text" id="ct2" value="${esc(s.tag)}"></div>
+    </div>
+    <div class="sc"><div class="st">🎨 Colors</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;"><input type="color" id="cc1" value="${s.cp}" style="width:48px;height:38px;border:2px solid var(--b);border-radius:8px;"><input type="text" value="Primary Color" readonly style="flex:1;padding:9px 12px;border:2px solid var(--b);border-radius:8px;font-size:12px;"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;"><input type="color" id="cc2" value="${s.cl}" style="width:48px;height:38px;border:2px solid var(--b);border-radius:8px;"><input type="text" value="Light" readonly style="flex:1;padding:9px 12px;border:2px solid var(--b);border-radius:8px;font-size:12px;"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;"><input type="color" id="cc3" value="${s.cg}" style="width:48px;height:38px;border:2px solid var(--b);border-radius:8px;"><input type="text" value="Gold" readonly style="flex:1;padding:9px 12px;border:2px solid var(--b);border-radius:8px;font-size:12px;"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;"><input type="color" id="cc4" value="${s.cgd}" style="width:48px;height:38px;border:2px solid var(--b);border-radius:8px;"><input type="text" value="Dark Gold" readonly style="flex:1;padding:9px 12px;border:2px solid var(--b);border-radius:8px;font-size:12px;"></div>
+    </div>
+    <div class="sc"><div class="st">💱 Currency & Fees</div><div class="fg"><label>1 USD = how many BDT?</label><input type="number" id="cu" value="${s.usd}" min="1"></div>
+      <div class="fg"><label>🔁 Transfer Fee (BDT)</label><input type="number" id="cft" value="${s.feeTransfer}" min="0" step="1"></div>
+      <div class="fg"><label>📤 Cash-Out Fee (%)</label><input type="number" id="cfc" value="${s.feeCashOut}" min="0" step="0.1"></div>
+      <div class="fg"><label>🤝 Agent Commission (%)</label><input type="number" id="cfa" value="${s.agentComm}" min="0" step="0.1"></div>
+      <div class="hint" style="margin:-4px 0 8px;">The admin can change these fees here — applied to all transactions instantly</div></div>
+    <button class="btn bp" onclick="saveCfgC()">💾 Save</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="go('more')">← Back</button>
+  `;
+}
+function saveCfgC(){
+  saveCfg({
+    name:document.getElementById('cn').value.trim()||DEF_CFG.name,
+    ar:document.getElementById('ca').value.trim()||DEF_CFG.ar,
+    tag:document.getElementById('ct2').value.trim()||DEF_CFG.tag,
+    cp:document.getElementById('cc1').value,
+    cl:document.getElementById('cc2').value,
+    cg:document.getElementById('cc3').value,
+    cgd:document.getElementById('cc4').value,
+    usd:parseFloat(document.getElementById('cu').value)||110,
+    feeTransfer:parseFloat(document.getElementById('cft').value)||10,
+    feeCashOut:parseFloat(document.getElementById('cfc').value)||1.5,
+    agentComm:parseFloat(document.getElementById('cfa').value)||0.4
+  });
+  log(SS.id,'SETTINGS_SAVED',{});
+  toast('✅ Saved');
+}
+function resetM(){
+  openM(`<div class="hn"></div><h2 style="color:var(--d);">🗑️ Reset</h2><p class="sb">All data will be erased</p>
+    <div style="background:#fef2f2;padding:12px;border-radius:11px;border:1px solid #fecaca;margin-bottom:12px;font-size:12px;line-height:1.8;">
+      <div>Users: ${DB.users().length}</div><div>Account: ${DB.accs().length}</div><div>Transactions: ${DB.txs().length}</div>
+    </div>
+    <div class="fg"><label>Type "RESET" (capital letters)</label><input type="text" id="rc" placeholder="RESET"></div>
+    <button class="btn bd" onclick="resetC()">Reset</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="closeM()">Cancel</button>`);
+}
+function resetC(){
+  if(document.getElementById('rc').value.trim().toUpperCase()!=='RESET')return toast('Type "RESET"','e');
+  if(FB)FB.set(null).catch(()=>{});
+  localStorage.clear();
+  toast('Reset। Loading...');
+  setTimeout(()=>location.reload(),1200);
+}
+
+/* ============ 21. PASSWORD CHANGE (★ NEW ★) ============ */
+function changePwdM(){
+  const u=findU_id(SS.id);
+  openM(`
+    <div class="hn"></div>
+    <h2>🔑 Change Password</h2>
+    <p class="sb">Current password and TOTP required for security</p>
+    <div class="fg"><label>🔒 Current Password</label><input type="password" id="pc" placeholder="••••••••"></div>
+    <div class="fg"><label>🆕 New Password</label><input type="password" id="pn" placeholder="••••••••" oninput="pwdStr()"><div id="ps" class="pw"></div><div class="hint">At least 8 chars with upper, lower case and numbers</div></div>
+    <div class="fg"><label>🆕 Repeat New Password</label><input type="password" id="pm" placeholder="••••••••" oninput="pwdMatch()"><div id="pmt" style="font-size:11px;margin-top:3px;"></div></div>
+    <div class="fg"><label>🔐 TOTP Code</label><input type="text" id="pt" class="tin" maxlength="6" inputmode="numeric" placeholder="000000"></div>
+    <button class="btn bp" onclick="changePwdC()">🔄 Change</button>
+    <button class="btn bo" style="margin-top:8px;" onclick="closeM()">Cancel</button>
+  `);
+  setTimeout(()=>document.getElementById('pc')?.focus(),100);
+}
+function pwdStr(){
+  const p=document.getElementById('pn').value;
+  const box=document.getElementById('ps');
+  if(!p){box.className='pw';return}
+  let s=0;
+  if(p.length>=8)s++;if(p.length>=12)s++;
+  if(/[a-z]/.test(p))s++;if(/[A-Z]/.test(p))s++;
+  if(/\d/.test(p))s++;if(/[^a-zA-Z0-9]/.test(p))s++;
+  if(s<=2){box.className='pw wk';box.innerHTML='⚠️ Weak password'}
+  else if(s<=4){box.className='pw ok';box.innerHTML='👍 Medium password'}
+  else{box.className='pw ok';box.innerHTML='💪 Strong password'}
+}
+function pwdMatch(){
+  const a=document.getElementById('pn').value;
+  const b=document.getElementById('pm').value;
+  const el=document.getElementById('pmt');
+  if(!b){el.textContent='';return}
+  if(a===b)el.innerHTML='<span style="color:#10b981;">✓ Match</span>';
+  else el.innerHTML='<span style="color:var(--d);">✗ Doesn&#39;t match</span>';
+}
+function changePwdC(){
+  try{
+    const cur=document.getElementById('pc').value;
+    const nw=document.getElementById('pn').value;
+    const cf=document.getElementById('pm').value;
+    const totp2=document.getElementById('pt').value.trim();
+    if(!cur)throw new Error('Enter current password');
+    if(!nw)throw new Error('Enter new password');
+    if(nw.length<8)throw new Error('New password must be at least 8 characters');
+    if(nw!==cf)throw new Error('Enter the same password twice');
+    if(nw===cur)throw new Error('New password must differ from the current one');
+    if(totp2.length!==6)throw new Error('Enter the 6-digit TOTP');
+    const u=findU_id(SS.id);
+    if(!u)throw new Error('User not found');
+    if(hash(cur)!==u.pwd){log(u.id,'PWD_FAIL',{r:'wrong_current'});throw new Error('❌ Current password is wrong')}
+    if(!verifyTOTP(u.secret,totp2)){log(u.id,'PWD_FAIL',{r:'wrong_totp'});throw new Error('❌ Wrong TOTP code')}
+    updUser(u.id,{pwd:hash(nw),pwd_at:Date.now()});
+    log(u.id,'PWD_CHANGED',{by:'self'});
+    closeM();
+    toast('✅ Password changed successfully!');
+    setTimeout(()=>{
+      if(confirm('Log out now for security?'))logout();
+    },1200);
+  }catch(e){toast(e.message,'e')}
+}
+
+/* ============ 22. PROFILE ============ */
+function profView(c){
+  const u=findU_id(SS.id);
+  loadMine();
+  const days=u.pwd_at?Math.floor((Date.now()-u.pwd_at)/86400000):0;
+  c.innerHTML=`
+    <div class="sc" style="text-align:center;padding:16px 0;">
+      <div class="av lg" style="margin:0 auto 12px;background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;border:3px solid var(--g);">${esc(u.name.charAt(0))}</div>
+      <h2 style="font-size:19px;margin-bottom:4px;color:var(--p);">${esc(u.name)}</h2>
+      <div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;"><span class="bd2 b${u.status==='active'?'A':u.status==='pending'?'P':'B'}">${u.status}</span><span class="rl r${u.role==='admin'?'Admin':u.role==='agent'?'Agent':'User'}">${u.role.toUpperCase()}</span></div>
+    </div>
+    <div class="sc"><div class="st">📋 Details</div>
+      <div style="background:#fff;padding:13px;border-radius:12px;box-shadow:var(--sh);border:1px solid var(--b);">
+        <div class="ir"><span class="l">🆔 ID</span><span class="v">#${u.id}</span></div>
+        <div class="ir"><span class="l">📧 Email</span><span class="v">${esc(u.email)}</span></div>
+        <div class="ir"><span class="l">📱 Mobile</span><span class="v">${esc(u.phone)}</span></div>
+<div class="ir"><span class="l">📄 Document</span><span class="v">${u.doc==='passport'?'🛂 Passport':'🆔 NID'} — ${esc(u.nid)}</span></div>
+        <div class="ir"><span class="l">🎂 Date of Birth</span><span class="v">${u.dob?fD(u.dob):'—'}</span></div>
+        <div class="ir"><span class="l">📅 Registered</span><span class="v">${fD(u.created)}</span></div>
+        ${u.last?'<div class="ir"><span class="l">🕐 Last Login</span><span class="v">'+fT(u.last)+'</span></div>':''}
+        <div class="ir"><span class="l">🔑 Change Password</span><span class="v">${days===0?'Today':days+' days ago'}</span></div>
+      </div>
+    </div>
+    <div class="sc"><div class="st">💳 My Accounts & Numbers <span style="font-size:10px;color:var(--tl);">Share this number to send or receive money</span></div>
+      ${MINE.length?MINE.map(a=>'<div class="tx"><div class="ti" style="background:#d1fae5;color:var(--p);">💳</div><div class="in"><h4>'+accL(a.type)+' — '+a.bal.toLocaleString()+' '+a.cur+'</h4><p style="font-family:monospace;font-size:12px;">'+a.no+'</p></div><button class="btn bp bsm" onclick="cpNo(\''+a.no+'\')">📋 Copy</button></div>').join(''):'<p style="font-size:12px;color:#999;padding:6px;">No accounts yet</p>'}
+    </div>
+    <div class="sc"><div class="st">🛡️ Security</div>
+      <div style="background:#fff;padding:13px;border-radius:12px;box-shadow:var(--sh);border:1px solid var(--b);">
+        <div style="display:flex;align-items:center;gap:9px;font-size:12px;margin-bottom:10px;"><span style="font-size:20px;">🔐</span><div><b>Google Authenticator (2FA)</b><div style="font-size:11px;color:#10b981;">✓ Active</div></div></div>
+        <button class="btn bw" style="padding:11px;font-size:13px;" onclick="changePwdM()">🔑 Change Password</button>
+      </div>
+    </div>
+    <button class="btn bo" onclick="showSetup(event)" style="margin-bottom:9px;">🔐 View My TOTP</button>
+    <button class="btn bd" onclick="logout()">Log Out</button>
+  `;
+}
+
+/* ============ 23. ACTION ============ */
+function act(i){
+  switch(i){
+    case 'dep':depM();break;
+    case 'wd':wdM();break;
+    case 'exch':exchM();break;
+    case 'addA':addAccM();break;
+    case 'ci':ciM();break;
+    case 'co':coM();break;
+    case 'tf':tfM();break;
+    case 'agt':agtM();break;
+  }
+}
+
+/* ============ 24. MODALS ============ */
+function addAccM(){
+  openM(`<div class="hn"></div><h2>➕ New Account</h2><p class="sb">Choose account type</p>
+    <div class="fg"><label>Type</label><select id="ty"><option value="savings">Mudarabah (5%, min ৳500)</option><option value="current">Current (0%, min ৳0)</option><option value="fixed_deposit">Fixed (8%, min ৳10,000)</option></select></div>
+    <div class="fg"><label>Currency</label><select id="cu2"><option value="BDT">BDT</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option></select></div>
+    <div class="fg"><label>Initial Deposit</label><input type="number" id="ini" min="0" step="0.01" placeholder="0"></div>
+    <div class="fg" id="fd" style="display:none;"><label>Term (days)</label><input type="number" id="fdn" value="365" min="30"></div>
+    <button class="btn bp" onclick="addAccC()">Open Account</button>`);
+  document.getElementById('ty').addEventListener('change',function(){document.getElementById('fd').style.display=this.value==='fixed_deposit'?'block':'none'});
+}
+function addAccC(){
+  try{
+    const t=document.getElementById('ty').value;
+    const cur=document.getElementById('cu2').value;
+    const init=parseFloat(document.getElementById('ini').value)||0;
+    const p=P[t];
+    if(init<p.min)throw new Error(p.l+' minimum '+p.min);
+    let mat=null;
+    if(t==='fixed_deposit'){const d=parseInt(document.getElementById('fdn').value)||365;mat=new Date(Date.now()+d*86400000).toISOString().slice(0,10)}
+    const a=addAcc({uid:SS.id,type:t,cur:cur,init:init,mat:mat});
+    log(SS.id,'ACC_CREATED',{no:a.no,type:t});
+    closeM();toast('✅ Account: '+a.no);go('accs');
+  }catch(e){toast(e.message,'e')}
+}
+function depM(){
+  if(SS.role!=='admin')return toast('Self-deposit is not allowed — please deposit through your nearest agent','e');
+  loadMine();
+  if(!MINE.length)return toast('Open an account first','e');
+  const opts=MINE.map(a=>'<option value="'+a.no+'">'+a.no+' — ৳'+a.bal+' '+a.cur+'</option>').join('');
+  openM(`<div class="hn"></div><h2>💰 Deposit</h2><p class="sb">Deposit money to your account</p>
+    <div class="fg"><label>Account</label><select id="da">${opts}</select></div>
+    <div class="aw"><span class="sy">৳</span><input type="number" id="daf" class="ai" min="1" step="0.01" placeholder="0.00"></div>
+    <button class="btn bp" onclick="depC()">Confirm Deposit</button>`);
+}
+function depC(){
+  try{
+    const n=document.getElementById('da').value;
+    const amt=parseFloat(document.getElementById('daf').value);
+    if(!(amt>0))throw new Error('Invalid amount');
+    const a=findA_noC(n,'BDT');
+    if(!a)throw new Error('No accounts');
+    if(a.status!=='active')throw new Error('Account Inactive');
+    if(SS.role==='user'&&a.uid!==SS.id)throw new Error('to your own account');
+    const nb=a.bal+amt;
+    updAcc(a.id,{bal:nb});
+    addTx({aid:a.id,type:'deposit',amt:amt,cur:a.cur,bal_after:nb,by:SS.id});
+    log(SS.id,'DEPOSIT',{a:a.id,amt});
+    closeM();toast('✅ ৳'+nb.toFixed(2));render();
+  }catch(e){toast(e.message,'e')}
+}
+function wdM(){
+  loadMine();
+  if(!MINE.length)return toast('Open an account first','e');
+  const opts=MINE.map(a=>'<option value="'+a.id+'">'+a.no+' — ৳'+a.bal+'</option>').join('');
+  openM(`<div class="hn"></div><h2>💸 Withdraw</h2><p class="sb">Confirm with TOTP</p>
+    <div class="fg"><label>Account</label><select id="wa">${opts}</select></div>
+    <div class="aw"><span class="sy">৳</span><input type="number" id="waf" class="ai" min="1" step="0.01" placeholder="0.00"></div>
+    <div class="fg"><label>🔐 TOTP Code</label><input type="text" id="wt" class="tin" maxlength="6" inputmode="numeric" placeholder="000000"></div>
+    <button class="btn bp" onclick="wdC()">Withdraw</button>`);
+}
+function wdC(){
+  try{
+    const aid=parseInt(document.getElementById('wa').value);
+    const amt=parseFloat(document.getElementById('waf').value);
+    const code=document.getElementById('wt').value.trim();
+    if(!(amt>0))throw new Error('Invalid amount');
+    if(code.length!==6)throw new Error('6-digit TOTP');
+    const a=findA(aid);
+    if(!a||a.uid!==SS.id)throw new Error('No accounts');
+    if(a.bal<amt)throw new Error('Insufficient balance');
+    const me=findU_id(SS.id);
+    if(!verifyTOTP(me.secret,code))throw new Error('Wrong TOTP');
+    const nb=a.bal-amt;
+    updAcc(aid,{bal:nb});
+    addTx({aid:aid,type:'withdraw',amt:amt,cur:a.cur,bal_after:nb,by:SS.id});
+    log(SS.id,'WITHDRAW',{a:aid,amt});
+    closeM();toast('✅ ৳'+nb.toFixed(2));render();
+  }catch(e){toast(e.message,'e')}
+}
+function ciM(){
+  openM(`<div class="hn"></div><h2>📥 Cash In</h2><p class="sb">Deposit to the customer account</p>
+    <div class="fg"><label>Account Number</label><input type="text" id="ca1" inputmode="numeric"></div>
+    <div class="aw"><span class="sy">৳</span><input type="number" id="ca2" class="ai" min="1"></div>
+    <button class="btn bs" onclick="ciC()">Confirm</button>`);
+}
+function ciC(){
+  try{
+    const n=document.getElementById('ca1').value.trim();
+    const amt=parseFloat(document.getElementById('ca2').value);
+    if(!(amt>0))throw new Error('Invalid amount');
+    const a=findA_noC(n,'BDT');
+    if(!a)throw new Error('No accounts');
+    if(a.status!=='active')throw new Error('Inactive');
+    const nb=a.bal+amt;
+    updAcc(a.id,{bal:nb});
+    const comm=commOf(amt);
+    const ag=agentBDT(SS.id);
+    if(ag)updAcc(ag.id,{bal:ag.bal+comm});
+    const adm=adminBDT();
+    if(adm&&adm.bal>=comm)updAcc(adm.id,{bal:adm.bal-comm});
+    addTx({aid:a.id,type:'cash_in',amt:amt,cur:a.cur,bal_after:nb,by:SS.id});
+    if(ag)addTx({aid:ag.id,type:'commission',amt:comm,cur:'BDT',bal_after:ag.bal+comm,by:SS.id,note:'Cash-in commission — '+a.no});
+    if(adm&&adm.bal>=comm)addTx({aid:adm.id,type:'commission',amt:comm,cur:'BDT',bal_after:adm.bal-comm,by:SS.id,dir:'out',note:'Cash-in commission paid — '+a.no});
+    log(SS.id,'CASH_IN',{a:a.id,amt,comm});
+    closeM();toast('✅ Deposited '+amt.toFixed(2)+' — your commission '+comm.toFixed(2)+' added');render();
+  }catch(e){toast(e.message,'e')}
+}
+function coM(){
+  openM(`<div class="hn"></div><h2>📤 Cash Out</h2><p class="sb">Service fee: ${cfg().feeCashOut}% — customer TOTP required</p>
+    <div class="fg"><label>Account Number</label><input type="text" id="ca3" inputmode="numeric"></div>
+    <div class="aw"><span class="sy">৳</span><input type="number" id="ca4" class="ai" min="1" oninput="prevCO()"></div>
+    <div id="cfp" style="background:rgba(212,175,55,.1);border-left:3px solid var(--g);padding:10px;border-radius:8px;margin-bottom:11px;font-size:12px;">Enter amount to see the fee</div>
+    <div class="fg"><label>🔐 Customer's TOTP</label><input type="text" id="ca5" class="tin" maxlength="6" inputmode="numeric"></div>
+    <button class="btn bd" onclick="coC()">Confirm</button>`);
+}
+function prevCO(){
+  const amt=parseFloat(document.getElementById('ca4')?.value)||0;
+  const p=document.getElementById('cfp');
+  if(!p)return;
+  if(!(amt>0)){p.textContent='Enter amount to see the fee';return}
+  const fee=feeOf(amt);
+  p.innerHTML='<div style="display:flex;justify-content:space-between;"><span>Withdraw</span><b>'+amt.toLocaleString()+'</b></div>'
+    +'<div style="display:flex;justify-content:space-between;margin-top:3px;"><span>Service Fee ('+cfg().feeCashOut+'%)</span><b style="color:var(--d);">'+fee.toFixed(2)+'</b></div>'
+    +'<div style="display:flex;justify-content:space-between;margin-top:3px;"><span>Total Deducted from Balance</span><b style="color:var(--d);">'+(amt+fee).toFixed(2)+'</b></div>';
+}
+function coC(){
+  try{
+    const n=document.getElementById('ca3').value.trim();
+    const amt=parseFloat(document.getElementById('ca4').value);
+    const code=document.getElementById('ca5').value.trim();
+    if(!(amt>0))throw new Error('Invalid amount');
+    if(code.length!==6)throw new Error('6-digit TOTP');
+    const a=findA_noC(n,'BDT');
+    if(!a)throw new Error('No accounts');
+    const fee=feeOf(amt);
+    if(a.bal<amt+fee)throw new Error('Insufficient balance (withdraw + fee = '+(amt+fee).toFixed(2)+' required)');
+    const o=findU_id(a.uid);
+    if(!verifyTOTP(o.secret,code))throw new Error('Wrong TOTP');
+    const nb=a.bal-(amt+fee);
+    updAcc(a.id,{bal:nb});
+    const comm=commOf(amt);
+    const ag=agentBDT(SS.id);
+    if(ag)updAcc(ag.id,{bal:ag.bal+comm});
+    const adm=adminBDT();
+    const keep=Math.round((fee-comm)*100)/100;
+    if(adm&&keep>0)updAcc(adm.id,{bal:adm.bal+keep});
+    addTx({aid:a.id,type:'cash_out',amt:amt,cur:a.cur,bal_after:nb,by:SS.id,note:'Fee ('+cfg().feeCashOut+'%): '+fee.toFixed(2)+' • Agent commission: '+comm.toFixed(2)});
+    if(ag)addTx({aid:ag.id,type:'commission',amt:comm,cur:'BDT',bal_after:ag.bal+comm,by:SS.id,note:'Cash-out commission — '+a.no});
+    if(adm&&keep>0)addTx({aid:adm.id,type:'feeIncome',amt:keep,cur:'BDT',bal_after:adm.bal+keep,by:SS.id,note:'Cash-out fee income — '+a.no});
+    log(SS.id,'CASH_OUT',{a:a.id,amt,fee,comm,keep});
+    closeM();toast('✅ Withdrew '+amt.toFixed(2)+', fee '+fee.toFixed(2)+' (your commission '+comm.toFixed(2)+' added)');render();
+  }catch(e){toast(e.message,'e')}
+}
+/* ============ USER-TO-USER TRANSFER ============ */
+function tfM(){
+  loadMine();
+  if(!MINE.length)return toast('Open an account first','e');
+  const opts=MINE.map(a=>'<option value="'+a.id+'">'+a.no+' — '+a.bal.toLocaleString()+' '+a.cur+'</option>').join('');
+  openM(`<div class="hn"></div><h2>🔁 Balance Transfer</h2><p class="sb">Send BDT or USD to the recipient&#39;s NID — if both BDT &amp; USD exist, money goes to your account&#39;s currency — fee ${cfg().feeTransfer} BDT (from BDT account)</p>
+    <div class="fg"><label>From Account</label><select id="ta">${opts}</select></div>
+    <div class="fg"><label>Recipient&#39;s Account Number</label><input type="text" id="tno" placeholder="Recipient&#39;s NID Number" oninput="prevTF()"></div>
+    <div class="aw"><span class="sy">৳</span><input type="number" id="tam" class="ai" min="1" step="0.01" placeholder="0.00" oninput="prevTF()"></div>
+    <div id="tfp" style="background:rgba(212,175,55,.1);border-left:3px solid var(--g);padding:10px;border-radius:8px;margin-bottom:11px;font-size:12px;">Recipient details will appear here</div>
+    <div class="fg"><label>🔐 TOTP Code</label><input type="text" id="tt" class="tin" maxlength="6" inputmode="numeric" placeholder="000000"></div>
+    <button class="btn bp" onclick="tfC()">Send Money</button>`);
+}
+function prevTF(){
+  const no=(document.getElementById('tno')?.value||'').trim();
+  const amt=parseFloat(document.getElementById('tam')?.value)||0;
+  const box=document.getElementById('tfp');
+  if(!box)return;
+  const s=findA(parseInt(document.getElementById('ta')?.value));
+  const all=findA_noAll(no);
+  const d=all.length?(all.find(x=>s&&x.cur===s.cur)||all[0]):null;
+  if(!d){box.textContent=no.length>=6?'❌ No account found with this number':'Recipient&#39;s NID Number ...';return}
+  const o=findU_id(d.uid);
+  const rn=o?{user:'Customer',agent:'Agent',admin:'Admin'}[o.role]:'';
+  const rl=o?(o.role==='admin'?'Admin':o.role==='agent'?'Agent':'User'):'User';
+  const mismatch=s&&s.cur!==d.cur;
+  box.innerHTML='<div><b>Recipient:</b> '+esc(o?o.name:'—')+' <span class="rl r'+rl+'">'+rn+'</span></div><div><b>Account:</b> '+d.no+' ('+d.cur+')</div>'
+    +((all.length>1&&!mismatch)?'<div style="color:var(--pl);margin-top:3px;">On this number: '+all.length+' account(s) (BDT+USD) — your '+d.cur+'  account selected</div>':'')
+    +(mismatch?'<div style="color:var(--d);margin-top:3px;">⚠️ recipient has no '+s.cur+' No accounts</div>':'')
+    +(amt>0?'<div style="margin-top:3px;"><b>Amount:</b> '+amt.toLocaleString()+' '+d.cur+'</div><div style="margin-top:3px;"><b>Fee:</b> '+cfg().feeTransfer+' BDT</div>':'');
+}
+function tfC(){
+  try{
+    const aid=parseInt(document.getElementById('ta').value);
+    const no=document.getElementById('tno').value.trim();
+    const amt=parseFloat(document.getElementById('tam').value);
+    const code=document.getElementById('tt').value.trim();
+    if(!(amt>0))throw new Error('Invalid amount');
+    if(code.length!==6)throw new Error('6-digit TOTP');
+    const s=findA(aid);
+    if(!s||s.uid!==SS.id)throw new Error('No accounts');
+    if(s.status!=='active')throw new Error('Your account is inactive');
+    const d=findA_noC(no,s.cur);
+    if(!d)throw new Error('Recipient account not found');
+    if(d.id===s.id)throw new Error('Cannot transfer to your own account');
+    if(d.status!=='active')throw new Error('Recipient account is inactive');
+    if(s.cur!==d.cur)throw new Error('Recipient&#39;s '+s.cur+' account number required ('+d.cur+'  account found)');
+    if(s.bal<amt)throw new Error('Insufficient balance');
+    const me=findU_id(SS.id);
+    if(!verifyTOTP(me.secret,code))throw new Error('Wrong TOTP');
+    const FEE=Number(cfg().feeTransfer)||10;
+    const bdt=DB.accs().find(x=>x.uid===SS.id&&x.cur==='BDT'&&x.status==='active');
+    if(!bdt)throw new Error('Active BDT account required for the fee');
+    if(bdt.id===s.id){if(s.bal<amt+FEE)throw new Error('balance low (amount + fee '+FEE+' BDT needed)')}
+    else if(bdt.bal<FEE)throw new Error('Need in BDT account: '+FEE+' BDT needed');
+    const nbs=(bdt.id===s.id)?s.bal-amt-FEE:s.bal-amt;
+    const nbd=d.bal+amt;
+    updAcc(s.id,{bal:nbs});
+    if(bdt.id!==s.id)updAcc(bdt.id,{bal:bdt.bal-FEE});
+    updAcc(d.id,{bal:nbd});
+    addTx({aid:s.id,type:'transfer',amt:amt,cur:s.cur,bal_after:nbs,by:SS.id,dir:'out',note:'To: '+d.no+' • Fee '+FEE+' BDT'});
+    addTx({aid:d.id,type:'transfer',amt:amt,cur:d.cur,bal_after:nbd,by:SS.id,dir:'in',note:'From: '+s.no});
+    log(SS.id,'TRANSFER',{f:s.no,t:d.no,amt,cur:s.cur,fee:FEE});
+    closeM();toast('✅ '+amt.toLocaleString()+' '+s.cur+' → '+esc(findU_id(d.uid)?.name||d.no)+' (fee '+FEE+' BDT)');render();
+  }catch(e){toast(e.message,'e')}
+}
+function agtM(){
+  loadMine();
+  const mineB=MINE.find(a=>a.cur==='BDT');
+  const ags=DB.users().filter(u=>u.role==='agent'&&u.status==='active');
+  openM(`<div class="hn"></div><h2>🏪 Agent Cash Out</h2>
+    <p class="sb">Visit your nearest agent and give your account number and TOTP code</p>
+    <div style="background:rgba(212,175,55,.1);border-left:3px solid var(--g);padding:10px;border-radius:8px;margin-bottom:11px;font-size:12px;line-height:1.9;">
+      <div>📥 <b>Cash In:</b> free of charge — credited instantly</div>
+      <div>📤 <b>Cash Out:</b> fee ${cfg().feeCashOut}% (receive cash in hand)</div>
+    </div>
+    <div class="fg"><label>Your account number (NID) — tap to copy</label><input type="text" readonly value="${mineB?mineB.no:'—'}" onclick="cpNo('${mineB?mineB.no:''}')" style="font-family:monospace;"></div>
+    <div class="st">🤝 Nearby Agents (${ags.length})</div>
+    ${ags.length?'<div class="tbl">'+ags.map(g=>'<div class="rw"><div class="av sm" style="background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;">'+esc(g.name.charAt(0))+'</div><div class="ii"><h4>'+esc(g.name)+'</h4><p>'+esc(g.phone)+'</p></div><a class="btn bs bsm" style="text-decoration:none;display:inline-flex;align-items:center;" href="tel:'+esc(g.phone)+'">📞 Call</a></div>').join('')+'</div>':'<p style="font-size:12px;color:#999;">No agents yet</p>'}
+    <button class="btn bo" style="margin-top:10px;" onclick="closeM()">Close</button>`);
+}
+function exchM(){
+  loadMine();
+  if(MINE.length<2)return toast('Both BDT and USD accounts required (contact admin)','e');
+  const opts=MINE.map(a=>'<option value="'+a.id+'">'+a.no+' — '+a.bal.toLocaleString()+' '+a.cur+'</option>').join('');
+  openM(`<div class="hn"></div><h2>💱 Buy / Sell Dollars</h2><p class="sb">Between your BDT and USD accounts — 10 BDT fee per transaction</p>
+    <div class="fg"><label>From Account</label><select id="xa" onchange="prevX()">${opts}</select></div>
+    <div class="fg"><label>To Account (You Receive)</label><select id="xt" onchange="prevX()">${opts}</select></div>
+    <div class="aw"><span class="sy">৳</span><input type="number" id="xam" class="ai" min="1" step="0.01" placeholder="0.00" oninput="prevX()"></div>
+    <div id="xp" style="background:rgba(212,175,55,.1);border-left:3px solid var(--g);padding:10px;border-radius:8px;margin-bottom:11px;font-size:12px;">Enter amount...</div>
+    <div class="fg"><label>🔐 TOTP</label><input type="text" id="xtot" class="tin" maxlength="6" inputmode="numeric" placeholder="------"></div>
+    <button class="btn bp" onclick="xC()">Confirm Exchange</button>`);
+  if(MINE.length>1)document.getElementById('xt').value=MINE[1].id;
+  prevX();
+}
+function prevX(){
+  const a=findA(parseInt(document.getElementById('xa')?.value));
+  const t=findA(parseInt(document.getElementById('xt')?.value));
+  const amt=parseFloat(document.getElementById('xam')?.value)||0;
+  const p=document.getElementById('xp');
+  if(!p)return;
+  if(!a||!t){p.textContent='Choose accounts...';return}
+  if(a.id===t.id){p.textContent='Choose two different accounts';return}
+  if(!(amt>0)){p.textContent='Enter amount...';return}
+  try{
+    const r=rate(a.cur,t.cur);
+    const get=Number((amt*r).toFixed(2));
+    p.innerHTML='<div style="display:flex;justify-content:space-between;"><span>Rate</span><b>1 '+a.cur+' = '+r.toFixed(4)+' '+t.cur+'</b></div>'
+      +'<div style="display:flex;justify-content:space-between;margin-top:3px;"><span>You Receive</span><b style="color:#10b981;">'+get.toLocaleString()+' '+t.cur+'</b></div>'
+      +'<div style="display:flex;justify-content:space-between;margin-top:3px;"><span>Fee</span><b style="color:var(--d);">10 BDT</b></div>'
+      +'<div style="display:flex;justify-content:space-between;margin-top:3px;"><span>Action</span><b>'+(a.cur==='BDT'?'Buying USD 💵':'Selling USD 💵')+'</b></div>';
+  }catch(e){p.textContent='Rate none'}
+}
+function xC(){
+  try{
+    const aid=parseInt(document.getElementById('xa').value);
+    const tid=parseInt(document.getElementById('xt').value);
+    const amt=parseFloat(document.getElementById('xam').value);
+    const code=document.getElementById('xtot').value.trim();
+    if(!(amt>0))throw new Error('Invalid amount');
+    if(code.length!==6)throw new Error('6-digit TOTP');
+    const s=findA(aid),t=findA(tid);
+    if(!s||!t||s.uid!==SS.id||t.uid!==SS.id)throw new Error('No accounts');
+    if(s.id===t.id)throw new Error('Same account selected');
+    if(s.status!=='active'||t.status!=='active')throw new Error('Account Inactive');
+    const me=findU_id(SS.id);
+    if(!verifyTOTP(me.secret,code))throw new Error('Wrong TOTP');
+    const r=rate(s.cur,t.cur);
+    const get=Number((amt*r).toFixed(2));
+    if(!(get>0))throw new Error('Rate error');
+    if(s.cur==='BDT'&&get<1)throw new Error('Too small to buy USD (minimum 110 BDT)');
+    const FEE=10;
+    const bdt=DB.accs().find(x=>x.uid===SS.id&&x.cur==='BDT'&&x.status==='active');
+    if(!bdt)throw new Error('Active BDT account required for the fee');
+    if(s.bal<amt)throw new Error(s.cur+' account: insufficient balance');
+    if(bdt.id===s.id&&s.bal<amt+FEE)throw new Error('Insufficient balance (amount + 10 BDT fee = '+(amt+FEE).toFixed(2)+' required)');
+    if(bdt.id!==s.id&&bdt.id!==t.id&&bdt.bal<FEE)throw new Error('Need in BDT account: '+FEE+' BDT needed');
+    if(bdt.id===t.id&&(t.bal+get)<FEE)throw new Error('Received BDT not enough for fee');
+    const dlt={};dlt[s.id]=(dlt[s.id]||0)-amt;dlt[t.id]=(dlt[t.id]||0)+get;dlt[bdt.id]=(dlt[bdt.id]||0)-FEE;
+    for(const k in dlt){
+      const acc=findA(Number(k));
+      const nb=acc.bal+dlt[k];
+      if(nb<-0.001)throw new Error(acc.cur+' account: insufficient balance');
+      updAcc(acc.id,{bal:nb});
+    }
+    const sb2=findA(s.id).bal,tb2=findA(t.id).bal;
+    addTx({aid:s.id,type:'exchange',amt:amt,cur:s.cur,rate:r,tcur:t.cur,tamt:get,bal_after:sb2,by:SS.id,dir:'out',note:(s.cur==='BDT'?'Buying USD 💵':'Selling USD 💵')+' → '+get+' '+t.cur+' • Fee 10 BDT'});
+    addTx({aid:t.id,type:'exchange',amt:get,cur:t.cur,rate:r,tcur:s.cur,tamt:amt,bal_after:tb2,by:SS.id,dir:'in',note:'Currency exchange ← '+amt+' '+s.cur});
+    log(SS.id,'EXCHANGE',{f:s.no,t:t.no,amt,cur:s.cur,got:get,fee:FEE});
+    closeM();toast('✅ '+(s.cur==='BDT'?'Bought':'Sold')+' '+get+' '+t.cur+' (fee '+FEE+' BDT)');render();
+  }catch(e){toast(e.message,'e')}
+}
+function accDet(id){
+  const a=findA(id);
+  if(!a)return toast('none','e');
+  const txs=DB.txs().filter(t=>t.aid===a.id);
+  openM(`<div class="hn"></div><h2>${accL(a.type)}</h2><p class="sb">${a.no}</p>
+    <div class="bc" style="background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;margin-bottom:12px;"><div class="l" style="color:var(--g);">Balance</div><div class="a">${a.bal.toLocaleString()} <span style="font-size:12px;opacity:.8;">${a.cur}</span></div></div>
+    <div class="st">📜 Transactions (${txs.length})</div>
+    ${txList(txs)}
+    <button class="btn bo" style="margin-top:10px;" onclick="closeM()">Disabled</button>`);
+}
+function txList(txs){
+  if(!txs||!txs.length)return '<div class="emp" style="padding:20px;"><p style="font-size:12px;">No transactions yet</p></div>';
+  const ic={deposit:'💰',withdraw:'💸',cash_in:'📥',cash_out:'📤',exchange:'💱',transfer:'🔁',commission:'💼',feeIncome:'🏦'};
+  const bg={deposit:'#d1fae5',withdraw:'#fee2e2',cash_in:'#d1fae5',cash_out:'#fee2e2',exchange:'#fef3c7',transfer:'#e0e7ff',commission:'#fce7f3',feeIncome:'#ecfccb'};
+  const inc=['deposit','cash_in'];
+  return txs.slice(0,30).map(t=>{
+    const isIn=inc.includes(t.type)||t.dir==='in';
+    const sign=isIn?'+ ':'- ';
+    return `<div class="tx"><div class="ti" style="background:${bg[t.type]||'#f1f5f9'};">${ic[t.type]||'💳'}</div><div class="in"><h4>${txL(t.type)} ${t.status==='reversed'?'<span class="bd2 bR">Reversed</span>':''}</h4><p>${fT(t.created)} • ${(t.ref||'').slice(0,12)}</p>${t.tcur?'<p style="color:var(--gd);">→ '+t.tamt+' '+t.tcur+'</p>':''}${t.note?'<p style="color:var(--gd);">'+esc(t.note)+'</p>':''}</div><div class="tam ${isIn?'plus':'minus'}">${sign}${t.amt.toLocaleString()}<br><span style="font-size:9px;opacity:.6;">${t.cur}</span></div></div>`;
+  }).join('');
+}
+
+/* ============ 25. INIT ============ */
+(function init(){
+  fbInit();
+  (async function boot(){
+    await fbPull();
+    initAdmin();
+    DB.users().forEach(u=>ensureTwinAcc(u.id));
+    DB.accs().forEach(a=>{const u=findU_id(a.uid);if(u&&(u.doc||'nid')==='nid'&&u.nid&&a.no!==String(u.nid))updAcc(a.id,{no:String(u.nid)})});
+    applyCfg();
+    const s=getSS();
+    if(s){
+      const u=findU_id(s.id);
+      if(u&&u.status==='active')setTimeout(()=>showApp(),80);
+      else clrSS();
+    }
+    fbPush();
+  })();
+})();
+</script>
+</body>
+</html>
